@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.dulljava.mapper.DatabaseManagementMapper">
+
+    <resultMap id="tableResultMap" type="com.dullfan.generate.entity.do_.Table">
+        <result property="name" column="name"/>
+        <result property="engine" column="engine"/>
+        <result property="version" column="version"/>
+        <result property="rowFormat" column="row_format"/>
+        <result property="rows" column="rows"/>
+        <result property="avgRowLength" column="avg_row_length"/>
+        <result property="dataLength" column="data_length"/> <!-- 注意这里的大小写，应与类属性匹配 -->
+        <result property="maxDataLength" column="max_data_length"/>
+        <result property="indexLength" column="index_length"/>
+        <result property="dataFree" column="data_free"/>
+        <result property="autoIncrement" column="auto_increment"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="checkTime" column="check_time"/>
+        <result property="collation" column="collation"/>
+        <result property="checksum" column="checksum"/>
+        <result property="createOptions" column="create_options"/>
+        <result property="comment" column="comment"/>
+    </resultMap>
+
+    <resultMap id="tableStructureResultMap" type="com.dullfan.generate.entity.do_.TableStructure">
+        <result property="nullz" column="null"/>
+        <result property="defaultz" column="default"/>
+    </resultMap>
+
+    <resultMap id="tablePrimaryKeyResultMap" type="com.dullfan.generate.entity.do_.TablePrimaryKey">
+        <result property="nullz" column="null"/>
+        <result property="indexComment" column="index_comment"/>
+        <result property="indexType" column="index_type"/>
+        <result property="columnName" column="column_name"/>
+        <result property="seqInIndex" column="seq_in_index"/>
+        <result property="keyName" column="key_name"/>
+        <result property="nonUnique" column="non_unique"/>
+    </resultMap>
+
+
+    <select id="findListTables" resultMap="tableResultMap" resultType="com.dullfan.generate.entity.do_.Table">
+        SHOW TABLE STATUS;
+    </select>
+
+    <select id="findTableStructure" resultMap="tableStructureResultMap" resultType="com.dullfan.generate.entity.do_.TableStructure">
+        SHOW FULL FIELDS FROM ${tableName};
+    </select>
+    <select id="findPrimaryKey" resultMap="tablePrimaryKeyResultMap" resultType="com.dullfan.generate.entity.do_.TablePrimaryKey">
+        SHOW INDEX FROM ${tableName};
+    </select>
+
+    <select id="SELECT1" resultMap="tablePrimaryKeyResultMap" resultType="com.dullfan.generate.entity.do_.TablePrimaryKey">
+        SELECT 1
+    </select>
+
+
+</mapper>

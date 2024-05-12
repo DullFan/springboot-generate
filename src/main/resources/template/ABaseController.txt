@@ -1,0 +1,15 @@
+
+
+public class ABaseController {
+    protected <T> AjaxResult getSuccessAjaxResult(T t) {
+        return AjaxResult.success(t);
+    }
+
+    protected <T> AjaxResult getBusinessErrorAjaxResult(RuntimeException e, T t) {
+        return AjaxResult.error(e.getMessage());
+    }
+
+    protected <T> AjaxResult getServerErrorAjaxResult(String t) {
+        return AjaxResult.error(t);
+    }
+}

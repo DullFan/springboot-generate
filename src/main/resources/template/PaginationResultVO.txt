@@ -1,0 +1,74 @@
+
+public class PaginationResultVO<T> {
+	private Integer totalCount;
+	private Integer pageSize;
+	private Integer pageNum;
+	private Integer pageTotal;
+	private List<T> list = new ArrayList<T>();
+
+	public PaginationResultVO(Integer totalCount, Integer pageSize, Integer pageNum, List<T> list) {
+		this.totalCount = totalCount;
+		this.pageSize = pageSize;
+		this.pageNum = pageNum;
+		this.list = list;
+	}
+
+    public PaginationResultVO(Integer totalCount, Integer pageSize, Integer pageNum, Integer pageTotal, List<T> list) {
+        if (pageNum == 0) {
+            pageNum = 1;
+        }
+        this.totalCount = totalCount;
+        this.pageSize = pageSize;
+        this.pageNum = pageNum;
+        this.pageTotal = pageTotal;
+        this.list = list;
+    }
+
+	public PaginationResultVO(List<T> list) {
+		this.list = list;
+	}
+
+	public PaginationResultVO() {
+
+	}
+
+	public Integer getTotalCount() {
+		return totalCount;
+	}
+
+	public void setTotalCount(Integer totalCount) {
+		this.totalCount = totalCount;
+	}
+
+	public Integer getPageSize() {
+		return pageSize;
+	}
+
+	public void setPageSize(Integer pageSize) {
+		this.pageSize = pageSize;
+	}
+
+	public Integer getPageNum() {
+		return pageNum;
+	}
+
+	public void setPageNum(Integer pageNum) {
+		this.pageNum = pageNum;
+	}
+
+	public List<T> getList() {
+		return list;
+	}
+
+	public void setList(List<T> list) {
+		this.list = list;
+	}
+
+	public Integer getPageTotal() {
+        return pageTotal;
+    }
+
+    public void setPageTotal(Integer pageTotal) {
+        this.pageTotal = pageTotal;
+    }
+}
