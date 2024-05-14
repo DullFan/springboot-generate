@@ -4,6 +4,7 @@ import com.dullfan.generate.config.DullJavaConfig;
 import com.dullfan.generate.utils.StringUtils;
 import com.dullfan.generate.utils.extremely.ServiceException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.ClassUtils;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -81,8 +82,7 @@ public class BuildBase {
             out = new FileOutputStream(javaFile);
             outw = new OutputStreamWriter(out, StandardCharsets.UTF_8);
             bw = new BufferedWriter(outw);
-            String templatePath = BuildBase.class.getClassLoader().getResource("template/" + fileName + ".txt").getPath();
-            in = new FileInputStream(templatePath);
+            InputStream in = ClassUtils.getDefaultClassLoader().getResourceAsStream("template/" + fileName + ".txt");
             inr = new InputStreamReader(in, StandardCharsets.UTF_8);
             bf = new BufferedReader(inr);
             for (String s : headerInfoList) {

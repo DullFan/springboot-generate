@@ -18,7 +18,6 @@ public interface DatabaseManagementService {
      */
     void switchDatabase(String sqlIP, String sqlPort, String sqlName, String sqlUserName, String sqlPassword);
 
-
     /**
      * 获取数据库中所有表
      *
@@ -26,6 +25,13 @@ public interface DatabaseManagementService {
      * @return 表列表
      */
     List<TableInfo> findListTables(Boolean tableStructureFlag);
+
+    /**
+     * 根据SQL语句生成代码
+     *
+     * @return 表列表
+     */
+    List<TableInfo> findListSQLTables(String sql);
 
     /**
      * 设置配置

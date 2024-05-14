@@ -1,6 +1,14 @@
 package com.dullfan.generate.service.impl;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.sql.ast.SQLIndex;
+import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.ast.statement.*;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONObject;
 import com.dullfan.generate.config.DullJavaConfig;
 import com.dullfan.generate.entity.*;
 import com.dullfan.generate.entity.do_.Table;
@@ -14,12 +22,15 @@ import com.dullfan.generate.utils.extremely.ServiceException;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.ibatis.jdbc.SQL;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 @Slf4j
@@ -54,7 +65,7 @@ public class DatabaseManagementServiceImpl implements DatabaseManagementService 
             // 请求失败之后中断
             dataSource.setBreakAfterAcquireFailure(true);
             // 切换之后判断是否切换成功
-            Integer i = SELECT1();
+            SELECT1();
         } catch (Exception e) {
             throw new RuntimeException("连接超时或数据库不存在", e);
         }
@@ -74,9 +85,83 @@ public class DatabaseManagementServiceImpl implements DatabaseManagementService 
             tableInfo.setBeanName(StringUtils.convertToCamelCase(beanName));
             tableInfo.setComment(listTable.getComment());
             tableInfo.setBeanParamName(beanName + DullJavaConfig.getTablePrefix());
-            if (tableStructureFlag) findTableStructure(tableInfo);
-            if (tableStructureFlag) findPrimaryKey(tableInfo);
+            if (tableStructureFlag) findTableStructure(tableInfo, null);
+            if (tableStructureFlag) findPrimaryKey(tableInfo, null);
             tableInfoList.add(tableInfo);
+        }
+        return tableInfoList;
+    }
+
+    @Override
+    public List<TableInfo> findListSQLTables(String sql) {
+        List<SQLStatement> sqlStatements = SQLUtils.parseStatements(sql, DbType.mysql);
+        List<TableInfo> tableInfoList = new ArrayList<>();
+
+        for (SQLStatement sqlStatement : sqlStatements) {
+            List<TableStructure> tableStructureList = new ArrayList<>();
+            List<TablePrimaryKey> tablePrimaryKeyList = new ArrayList<>();
+            if (sqlStatement instanceof MySqlCreateTableStatement) {
+                MySqlCreateTableStatement createTableStatement = (MySqlCreateTableStatement) sqlStatement;
+                String tableName = createTableStatement.getTableName().replaceAll("`", "");
+                String tableComment = createTableStatement.getComment().toString().replaceAll("'", "");
+                TableInfo tableInfo = new TableInfo();
+                tableInfo.setTableName(tableName);
+                if (DullJavaConfig.getTablePrefix()) {
+                    tableName = tableName.substring(tableName.indexOf("_") + 1);
+                }
+                tableInfo.setBeanName(StringUtils.convertToCamelCase(tableName));
+                tableInfo.setComment(tableComment);
+
+                for (SQLColumnDefinition columnDefinition : createTableStatement.getColumnDefinitions()) {
+                    TableStructure tableStructure = new TableStructure();
+                    String columnName = columnDefinition.getName().toString().replaceAll("`", "");
+                    String columnComment = columnDefinition.getComment().toString().replaceAll("'", "");
+                    String columnType = columnDefinition.getDataType().toString();
+                    if (columnDefinition.isAutoIncrement()) {
+                        tableStructure.setExtra("auto_increment");
+                    }
+                    tableStructure.setField(columnName);
+                    tableStructure.setType(columnType);
+                    tableStructure.setComment(columnComment);
+                    tableStructureList.add(tableStructure);
+                }
+
+                for (SQLTableElement element : createTableStatement.getTableElementList()) {
+                    String elementString = element.toString();
+                    if (elementString.contains("PRIMARY KEY")) {
+                        // 使用正则表达式提取主键字段名
+                        Pattern pattern = Pattern.compile("PRIMARY KEY.*\\(`(.*?)`\\)");
+                        Matcher matcher = pattern.matcher(elementString);
+                        if (matcher.find()) {
+                            TablePrimaryKey tablePrimaryKey = new TablePrimaryKey();
+                            tablePrimaryKey.setNonUnique(0);
+                            tablePrimaryKey.setKeyName("PRIMARY");
+                            tablePrimaryKey.setColumnName(matcher.group(1));
+                            tablePrimaryKeyList.add(tablePrimaryKey);
+                        }
+                    } else if (elementString.contains("UNIQUE KEY")) {
+                        // 使用正则表达式提取唯一键名称和字段名
+                        Pattern pattern = Pattern.compile("UNIQUE KEY `([^`]+)`.*?\\((.*?)\\)");
+                        Matcher matcher = pattern.matcher(elementString);
+                        if (matcher.find()) {
+                            TablePrimaryKey tablePrimaryKey;
+                            String uniqueKeyName = matcher.group(1);
+                            String[] uniqueKeyFields = matcher.group(2).split(",\\s*");
+                            for (String uniqueKeyField : uniqueKeyFields) {
+                                tablePrimaryKey = new TablePrimaryKey();
+                                tablePrimaryKey.setNonUnique(0);
+                                String columnName = uniqueKeyField.trim().replaceAll("`", "");
+                                tablePrimaryKey.setColumnName(columnName);
+                                tablePrimaryKey.setKeyName(uniqueKeyName);
+                                tablePrimaryKeyList.add(tablePrimaryKey);
+                            }
+                        }
+                    }
+                }
+                tableInfoList.add(tableInfo);
+                findTableStructure(tableInfo,tableStructureList);
+                findPrimaryKey(tableInfo,tablePrimaryKeyList);
+            }
         }
         return tableInfoList;
     }
@@ -84,7 +169,7 @@ public class DatabaseManagementServiceImpl implements DatabaseManagementService 
     @Override
     public void updateConfig(ConfigBean configBean) {
         switchDatabase(configBean.getSqlIp(), configBean.getIpPort(), configBean.getSqlName(), configBean.getSqlUsername(), configBean.getSqlPassword());
-        if(configBean.getSpringBootVersion() == null) configBean.setSpringBootVersion(3);
+        if (configBean.getSpringBootVersion() == null) configBean.setSpringBootVersion(3);
         if (configBean.getSpringBootVersion() == 2) {
             DullJavaConfig.setSpringBoot2();
         } else if (configBean.getSpringBootVersion() == 3) {
@@ -107,10 +192,12 @@ public class DatabaseManagementServiceImpl implements DatabaseManagementService 
     /**
      * 获取表字段
      */
-    private void findTableStructure(TableInfo tableInfo) {
+    private void findTableStructure(TableInfo tableInfo, List<TableStructure> tableStructure) {
         List<FieldInfo> fieldInfoList = new ArrayList<>();
         try {
-            List<TableStructure> tableStructure = databaseManagementMapper.findTableStructure(tableInfo.getTableName());
+            if (tableStructure == null) {
+                tableStructure = databaseManagementMapper.findTableStructure(tableInfo.getTableName());
+            }
             boolean hasDateTime = false;
             boolean hasDate = false;
             boolean hasBigDecimal = false;
@@ -177,16 +264,20 @@ public class DatabaseManagementServiceImpl implements DatabaseManagementService 
      *
      * @param tableInfo 表信息
      */
-    private void findPrimaryKey(TableInfo tableInfo) {
+    private void findPrimaryKey(TableInfo tableInfo, List<TablePrimaryKey> primaryKeyList) {
         try {
-            List<TablePrimaryKey> primaryKeyList = databaseManagementMapper.findPrimaryKey(tableInfo.getTableName());
+            if (primaryKeyList == null) {
+                primaryKeyList = databaseManagementMapper.findPrimaryKey(tableInfo.getTableName());
+            }
             Map<String, FieldInfo> tempMap = new HashMap<>();
             for (FieldInfo fieldInfo : tableInfo.getFieldInfoList()) {
                 tempMap.put(fieldInfo.getFieldName(), fieldInfo);
             }
             for (TablePrimaryKey tablePrimaryKey : primaryKeyList) {
                 if (tablePrimaryKey.getNonUnique() == 1) continue;
-                tableInfo.getKeyIndexMap().computeIfAbsent(tablePrimaryKey.getKeyName(), k -> new ArrayList<>()).add(tempMap.get(tablePrimaryKey.getColumnName()));
+                tableInfo.getKeyIndexMap()
+                        .computeIfAbsent(tablePrimaryKey.getKeyName(), k ->
+                                new ArrayList<>()).add(tempMap.get(tablePrimaryKey.getColumnName()));
             }
         } catch (Exception e) {
             throw new ServiceException(StringUtils.format("{}表不存在", tableInfo.getTableName()));

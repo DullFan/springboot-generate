@@ -337,7 +337,7 @@ public class DullJavaConfig {
         pathUtilsEnum = "utils/enums";
         packageUtilsEnum = ".utils.enums";
         pathUtils = "utils";
-        packageUtils = "entity.po";
+        packageUtils = ".utils";
         pathPackagePo = "entity/po";
         packagePo = "entity.po";
         packageQuery = "entity.query";

@@ -25,7 +25,7 @@ public class DatabaseManagementController {
     DatabaseManagementService service;
 
     /**
-     * 获取当前数据库中所有字段
+     * 获取当前数据库中所有表
      */
     @PostMapping("/findAllSQLResource")
     public void findAllSQLResource(HttpServletResponse response, @RequestBody ConfigBean configBean) {
@@ -46,7 +46,12 @@ public class DatabaseManagementController {
     public void createFile(HttpServletResponse response, ConfigBean configBean, Boolean isAll) {
         service.updateConfig(configBean);
         HashSet<String> databaseHashSet = new HashSet<>(Arrays.asList(StringUtils.trim(configBean.getDatabaseName()).split(",")));
-        List<TableInfo> listTables = service.findListTables(true);
+        List<TableInfo> listTables;
+        if (StringUtils.isEmpty(configBean.getSqlStatement())) {
+            listTables = service.findListTables(true);
+        } else {
+            listTables = service.findListSQLTables(configBean.getSqlStatement());
+        }
         for (TableInfo tableInfo : listTables) {
             if (isAll || databaseHashSet.contains(tableInfo.getTableName())) {
                 BuildFile.execute(tableInfo);
@@ -61,7 +66,7 @@ public class DatabaseManagementController {
         // 下载文件
         FileUtils.downloadFile(response);
         // 删除生成的文件
-        FileUtils.deleteFile(DullJavaConfig.getPathBaseTemporary() + DullJavaConfig.getFileUUID());
+//        FileUtils.deleteFile(DullJavaConfig.getPathBaseTemporary() + DullJavaConfig.getFileUUID());
     }
 
     @PostMapping("/updateConfig")

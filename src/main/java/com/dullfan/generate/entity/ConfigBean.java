@@ -33,14 +33,14 @@ public class ConfigBean {
     private String ipPort;
 
     /**
-     * 数据库用户名
-     */
-    private String sqlUsername;
-
-    /**
      * 数据库名称
      */
     private String sqlName;
+
+    /**
+     * 数据库用户名
+     */
+    private String sqlUsername;
 
     /**
      * 数据库密码
@@ -48,7 +48,7 @@ public class ConfigBean {
     private String sqlPassword;
 
     /**
-     * 数据库密码
+     * SpringBoot 版本
      */
     private Integer springBootVersion = 3;
 
@@ -56,4 +56,9 @@ public class ConfigBean {
      * 单表名称列表
      */
     private String databaseName = "";
+
+    /**
+     * SQL语句
+     */
+    private String sqlStatement = "";
 }

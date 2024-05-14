@@ -692,6 +692,7 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils
     }
 
     public static String processJavaType(String type){
+        type = type.toLowerCase();
         if(ArrayUtils.contains(Constants.SQL_INTEGER_TYPE,type)) return "Integer";
         if(ArrayUtils.contains(Constants.SQL_LONG_TYPE,type)) return "Long";
         if(ArrayUtils.contains(Constants.SQL_STRING_TYPE,type)) return "String";
