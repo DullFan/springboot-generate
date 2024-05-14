@@ -53,8 +53,6 @@ public class BuildController {
             writeText("@RequestMapping(\"/" + StringUtils.lowerCaseFirstLetter(tableInfo.getBeanName()) + "\")");
             writeText("public class " + className + " extends ABaseController {");
 
-            String beanName = tableInfo.getBeanName();
-
             writeText("\t@Resource");
             String serviceBean = StringUtils.lowerCaseFirstLetter(tableInfo.getBeanName()) + "Service";
             writeText("\tprivate " + tableInfo.getBeanName() + "Service " + serviceBean + ";");
@@ -95,9 +93,9 @@ public class BuildController {
             Map<String, List<FieldInfo>> keyMap = tableInfo.getKeyIndexMap();
             for (Map.Entry<String, List<FieldInfo>> entry : keyMap.entrySet()) {
                 List<FieldInfo> keyfieldInfoList = entry.getValue();
-                StringBuffer paramStr = new StringBuffer();
-                StringBuffer paramNameStr = new StringBuffer();
-                StringBuffer methodName = new StringBuffer();
+                StringBuilder paramStr = new StringBuilder();
+                StringBuilder paramNameStr = new StringBuilder();
+                StringBuilder methodName = new StringBuilder();
                 int index = 0;
                 for (FieldInfo column : keyfieldInfoList) {
                     if (index > 0) {
@@ -105,33 +103,33 @@ public class BuildController {
                         paramNameStr.append(",");
                         methodName.append("And");
                     }
-                    paramStr.append(column.getJavaType() + " " + column.getPropertyName() + "");
+                    paramStr.append(column.getJavaType()).append(" ").append(column.getPropertyName());
                     paramNameStr.append(column.getPropertyName());
                     methodName.append(StringUtils.convertToCamelCase(column.getPropertyName()));
                     index++;
                 }
-                if (paramStr.length() > 0) {
+                if (!paramStr.isEmpty()) {
                     //根据主键查询
                     BuildComment.createMethodComment(bw, "根据" + methodName + "查询对象");
-                    String methodNameStr = "get" + tableInfo.getBeanName() + "By" + methodName.toString();
+                    String methodNameStr = "get" + tableInfo.getBeanName() + "By" + methodName;
                     writeText("\t@GetMapping(\"/" + methodNameStr + "\")");
-                    writeText("\tpublic AjaxResult " + methodNameStr + "(" + paramStr.toString() + ") {");
+                    writeText("\tpublic AjaxResult " + methodNameStr + "(" + paramStr + ") {");
                     writeText("\t\treturn getSuccessAjaxResult(" + serviceBean + "." + methodNameStr + "(" + paramNameStr + "));");
                     writeText("\t}");
 
                     BuildComment.createMethodComment(bw, "根据" + methodName + "修改对象");
-                    methodNameStr = "update" + tableInfo.getBeanName() + "By" + methodName.toString();
+                    methodNameStr = "update" + tableInfo.getBeanName() + "By" + methodName;
                     writeText("\t@PutMapping(\"/" + methodNameStr + "\")");
-                    writeText("\tpublic AjaxResult " + methodNameStr + "(" + tableInfo.getBeanName() + " bean," + paramStr.toString() + ") {");
+                    writeText("\tpublic AjaxResult " + methodNameStr + "(" + tableInfo.getBeanName() + " bean," + paramStr + ") {");
                     writeText("\t\t" + serviceBean + "." + methodNameStr + "(bean," + paramNameStr + ");");
                     writeText("\t\treturn getSuccessAjaxResult(null);");
                     writeText("\t}");
 
                     //根据主键删除
                     BuildComment.createMethodComment(bw, "根据" + methodName + "删除");
-                    methodNameStr = "delete" + tableInfo.getBeanName() + "By" + methodName.toString();
+                    methodNameStr = "delete" + tableInfo.getBeanName() + "By" + methodName;
                     writeText("\t@DeleteMapping(\"/" + methodNameStr + "\")");
-                    writeText("\tpublic AjaxResult " + methodNameStr + "(" + paramStr.toString() + ") {");
+                    writeText("\tpublic AjaxResult " + methodNameStr + "(" + paramStr + ") {");
                     writeText("\t\t" + serviceBean + "." + methodNameStr + "(" + paramNameStr + ");");
                     writeText("\t\treturn getSuccessAjaxResult(null);");
                     writeText("\t}");

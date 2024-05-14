@@ -1,7 +1,5 @@
 package com.dullfan.generate.build;
 
-import com.alibaba.fastjson2.JSON;
-import com.alibaba.fastjson2.JSONObject;
 import com.dullfan.generate.config.DullJavaConfig;
 import com.dullfan.generate.entity.FieldInfo;
 import com.dullfan.generate.entity.TableInfo;
