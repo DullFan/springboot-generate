@@ -10,7 +10,7 @@
     </parent>
     <groupId>springboot-generate</groupId>
     <artifactId>springboot-generate</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.1</version>
     <name>springboot-generate</name>
     <description>代码生成工具</description>
     <packaging>jar</packaging>

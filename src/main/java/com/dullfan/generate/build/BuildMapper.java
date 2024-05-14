@@ -1,5 +1,7 @@
 package com.dullfan.generate.build;
 
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONObject;
 import com.dullfan.generate.config.DullJavaConfig;
 import com.dullfan.generate.entity.FieldInfo;
 import com.dullfan.generate.entity.TableInfo;
@@ -16,7 +18,6 @@ public class BuildMapper {
     private static OutputStream out;
     private static OutputStreamWriter outputStreamWriter;
     private static BufferedWriter bw;
-
 
     public static void execute(TableInfo tableInfo) {
         File folder = new File(DullJavaConfig.getPathMapper());
@@ -47,14 +48,12 @@ public class BuildMapper {
 
             Map<String, List<FieldInfo>> keyIndexMap = tableInfo.getKeyIndexMap();
 
-
             for (Map.Entry<String, List<FieldInfo>> entry : keyIndexMap.entrySet()) {
                 int index = 0;
                 List<FieldInfo> keyFieldInfos = entry.getValue();
                 StringBuilder methodName = new StringBuilder();
                 StringBuilder methodParams = new StringBuilder();
                 for (FieldInfo fieldInfo : keyFieldInfos) {
-                    index++;
                     methodName.append(StringUtils.convertToCamelCase(fieldInfo.getPropertyName()));
 
                     methodParams.append("@Param(\"").append(fieldInfo.getPropertyName()).append("\") ").append(fieldInfo.getJavaType()).append(" ").append(fieldInfo.getPropertyName());

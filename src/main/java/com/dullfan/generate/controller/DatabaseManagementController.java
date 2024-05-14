@@ -1,6 +1,7 @@
 package com.dullfan.generate.controller;
 
 
+import com.alibaba.fastjson2.JSONObject;
 import com.dullfan.generate.build.*;
 import com.dullfan.generate.config.DullJavaConfig;
 import com.dullfan.generate.entity.ConfigBean;
@@ -52,6 +53,7 @@ public class DatabaseManagementController {
         } else {
             listTables = service.findListSQLTables(configBean.getSqlStatement());
         }
+        System.out.println(JSONObject.toJSONString(listTables));
         for (TableInfo tableInfo : listTables) {
             if (isAll || databaseHashSet.contains(tableInfo.getTableName())) {
                 BuildFile.execute(tableInfo);
@@ -66,7 +68,7 @@ public class DatabaseManagementController {
         // 下载文件
         FileUtils.downloadFile(response);
         // 删除生成的文件
-//        FileUtils.deleteFile(DullJavaConfig.getPathBaseTemporary() + DullJavaConfig.getFileUUID());
+        FileUtils.deleteFile(DullJavaConfig.getPathBaseTemporary() + DullJavaConfig.getFileUUID());
     }
 
     @PostMapping("/updateConfig")

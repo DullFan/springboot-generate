@@ -92,6 +92,11 @@ public class DatabaseManagementServiceImpl implements DatabaseManagementService 
         return tableInfoList;
     }
 
+    /**
+     * 解析SQL
+     * @param sql
+     * @return
+     */
     @Override
     public List<TableInfo> findListSQLTables(String sql) {
         List<SQLStatement> sqlStatements = SQLUtils.parseStatements(sql, DbType.mysql);
@@ -129,15 +134,17 @@ public class DatabaseManagementServiceImpl implements DatabaseManagementService 
                 for (SQLTableElement element : createTableStatement.getTableElementList()) {
                     String elementString = element.toString();
                     if (elementString.contains("PRIMARY KEY")) {
-                        // 使用正则表达式提取主键字段名
-                        Pattern pattern = Pattern.compile("PRIMARY KEY.*\\(`(.*?)`\\)");
+                        Pattern pattern = Pattern.compile("\\(([^)]+)\\)");
                         Matcher matcher = pattern.matcher(elementString);
                         if (matcher.find()) {
-                            TablePrimaryKey tablePrimaryKey = new TablePrimaryKey();
-                            tablePrimaryKey.setNonUnique(0);
-                            tablePrimaryKey.setKeyName("PRIMARY");
-                            tablePrimaryKey.setColumnName(matcher.group(1));
-                            tablePrimaryKeyList.add(tablePrimaryKey);
+                            String[] columns = matcher.group(1).split(",\\s*");
+                            for (String columnName : columns) {
+                                TablePrimaryKey tablePrimaryKey = new TablePrimaryKey();
+                                tablePrimaryKey.setNonUnique(0);
+                                tablePrimaryKey.setKeyName("PRIMARY");
+                                tablePrimaryKey.setColumnName(columnName.trim().replace("`", "")); // 移除反引号，如果存在
+                                tablePrimaryKeyList.add(tablePrimaryKey);
+                            }
                         }
                     } else if (elementString.contains("UNIQUE KEY")) {
                         // 使用正则表达式提取唯一键名称和字段名
