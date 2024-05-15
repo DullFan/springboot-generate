@@ -93,7 +93,7 @@ SpringBoot-Generate是一款代码生成工具，旨在通过根据SQL语句生�
 | fieldIgnoreList  | 要忽略的字段列表    | String  |
 | author           | 作者               | String  |
 | springBootVersion| Spring Boot版本    | String  |
-| sqlStatement     | SQL语句            | String  |
+| sqlStatement     | SQL语句（分号分割）            | String  |
 * 请求示例
 ```json
 {
