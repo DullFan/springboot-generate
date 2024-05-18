@@ -52,6 +52,7 @@ public class BuildMapper {
                 StringBuilder methodName = new StringBuilder();
                 StringBuilder methodParams = new StringBuilder();
                 for (FieldInfo fieldInfo : keyFieldInfos) {
+                    index++;
                     methodName.append(StringUtils.convertToCamelCase(fieldInfo.getPropertyName()));
 
                     methodParams.append("@Param(\"").append(fieldInfo.getPropertyName()).append("\") ").append(fieldInfo.getJavaType()).append(" ").append(fieldInfo.getPropertyName());
@@ -84,8 +85,6 @@ public class BuildMapper {
             closeStream();
         }
     }
-
-
     private static void closeStream() {
         try {
             bw.close();

@@ -70,7 +70,6 @@ public class DatabaseManagementController {
         // 删除生成的文件
         FileUtils.deleteFile(DullJavaConfig.getPathBaseTemporary() + DullJavaConfig.getFileUUID());
     }
-
     @PostMapping("/updateConfig")
     public AjaxResult updateConfig(@RequestBody ConfigBean configBean) {
         service.updateConfig(configBean);
@@ -83,6 +82,7 @@ public class DatabaseManagementController {
     @PostMapping("/findAllSQLStructure")
     public AjaxResult findAllSQLStructure(@RequestBody ConfigBean configBean) {
         service.updateConfig(configBean);
+        System.out.println(configBean.toString());
         List<TableInfo> listTables = service.findListTables(false);
         return AjaxResult.success(listTables);
     }

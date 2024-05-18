@@ -171,6 +171,9 @@ public class DatabaseManagementServiceImpl implements DatabaseManagementService 
 
     @Override
     public void updateConfig(ConfigBean configBean) {
+        if(StringUtils.isEmpty(configBean.getAuthor())){
+            configBean.setAuthor(DullJavaConfig.getAuthor());
+        }
         switchDatabase(configBean.getSqlIp(), configBean.getIpPort(), configBean.getSqlName(), configBean.getSqlUsername(), configBean.getSqlPassword());
         if (configBean.getSpringBootVersion() == null) configBean.setSpringBootVersion(3);
         if (configBean.getSpringBootVersion() == 2) {

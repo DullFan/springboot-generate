@@ -1,5 +1,6 @@
 package com.dullfan.generate.entity;
 
+import com.dullfan.generate.config.DullJavaConfig;
 import lombok.Data;
 
 @Data
@@ -7,11 +8,11 @@ public class ConfigBean {
     /**
      * 是否忽略表前缀
      */
-    private boolean tablePrefix;
+    private boolean tablePrefix = true;
     /**
      * 包路径
      */
-    private String packageBase;
+    private String packageBase = DullJavaConfig.getPackageBase();
     /**
      * 需要忽略的字段
      */
@@ -20,7 +21,7 @@ public class ConfigBean {
     /**
      * 作者
      */
-    private String author;
+    private String author = DullJavaConfig.getAuthor();
 
     /**
      * 数据库IP

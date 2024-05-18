@@ -11,6 +11,10 @@ SpringBoot-Generate是一款代码生成工具，旨在通过根据SQL语句生�
 3. 配置动态数据源,支持动态的添加数据源和切换数据源,不需要重启服务.
 4. 代码生成的时候支持浏览器下载和生成到本地.
 
+## UI
+![img.png](res/ui.png)
+前端文件在ui中,用Vue3 + Vite + ElementPlus写的
+
 ## API
 
 ### 生成数据库中所有表代码
