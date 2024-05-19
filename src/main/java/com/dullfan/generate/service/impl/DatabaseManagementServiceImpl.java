@@ -6,6 +6,7 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
+import com.alibaba.fastjson2.JSONObject;
 import com.dullfan.generate.config.DullJavaConfig;
 import com.dullfan.generate.entity.*;
 import com.dullfan.generate.entity.do_.Table;
@@ -259,8 +260,7 @@ public class DatabaseManagementServiceImpl implements DatabaseManagementService 
             }
             tableInfo.setExtendFieldInfoList(extendList);
         } catch (Exception e) {
-            e.printStackTrace();
-            throw new ServiceException(StringUtils.format("{}表不存在", tableInfo.getTableName()));
+            throw new ServiceException(e);
         }
         tableInfo.setFieldInfoList(fieldInfoList);
     }

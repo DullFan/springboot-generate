@@ -698,6 +698,8 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils
         if(ArrayUtils.contains(Constants.SQL_STRING_TYPE,type)) return "String";
         if(ArrayUtils.contains(Constants.SQL_DATE_TIME_TYPES,type) || ArrayUtils.contains(Constants.SQL_DATE_TYPES,type)) return "Date";
         if(ArrayUtils.contains(Constants.SQL_DECIMAL_TYPE,type)) return "BigDecimal";
+        if(ArrayUtils.contains(Constants.SQL_FLOAT_TYPE,type)) return "Float";
+        if(ArrayUtils.contains(Constants.SQL_DOUBLE_TYPE,type)) return "Double";
         if(ArrayUtils.contains(Constants.SQL_BYTE_TYPES,type)) return "byte[]";
         throw new ServiceException("无法识别的类型:"+type);
     }
