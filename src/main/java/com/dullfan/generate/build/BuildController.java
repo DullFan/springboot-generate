@@ -63,7 +63,7 @@ public class BuildController {
             String paramName = "param";
             writeText("\tpublic AjaxResult loadDataList(" + tableInfo.getBeanName() + DullJavaConfig.getBeanQuery() + " " + paramName + "){");
 
-            writeText("\t\treturn getSuccessAjaxResult(" + serviceBean + ".findListByPage(" + paramName + "));");
+            writeText("\t\treturn success(" + serviceBean + ".findListByPage(" + paramName + "));");
             writeText("\t}");
 
             //新增
@@ -71,7 +71,7 @@ public class BuildController {
             writeText("\t@PostMapping(\"/add\")");
             writeText("\tpublic AjaxResult add(@RequestBody " + tableInfo.getBeanName() + " bean) {");
             writeText("\t\t" + serviceBean + ".add(bean);");
-            writeText("\t\treturn getSuccessAjaxResult(null);");
+            writeText("\t\treturn success(null);");
             writeText("\t}");
 
             //批量新增的方法
@@ -79,7 +79,7 @@ public class BuildController {
             writeText("\t@PostMapping(\"/addBatch\")");
             writeText("\tpublic AjaxResult addBatch(@RequestBody List<" + tableInfo.getBeanName() + "> listBean) {");
             writeText("\t\t" + serviceBean + ".addBatch(listBean);");
-            writeText("\t\treturn getSuccessAjaxResult(null);");
+            writeText("\t\treturn success(null);");
             writeText("\t}");
 
             //批量新增的方法
@@ -87,7 +87,7 @@ public class BuildController {
             writeText("\t@PostMapping(\"/addOrUpdateBatch\")");
             writeText("\tpublic AjaxResult addOrUpdateBatch(@RequestBody List<" + tableInfo.getBeanName() + "> listBean) {");
             writeText("\t\t" + serviceBean + ".addBatch(listBean);");
-            writeText("\t\treturn getSuccessAjaxResult(null);");
+            writeText("\t\treturn success(null);");
             writeText("\t}");
 
             Map<String, List<FieldInfo>> keyMap = tableInfo.getKeyIndexMap();
@@ -111,10 +111,10 @@ public class BuildController {
                 if (!paramStr.isEmpty()) {
                     //根据主键查询
                     BuildComment.createMethodComment(bw, "根据" + methodName + "查询对象");
-                    String methodNameStr = "get" + tableInfo.getBeanName() + "By" + methodName;
+                    String methodNameStr = "find" + tableInfo.getBeanName() + "By" + methodName;
                     writeText("\t@GetMapping(\"/" + methodNameStr + "\")");
                     writeText("\tpublic AjaxResult " + methodNameStr + "(" + paramStr + ") {");
-                    writeText("\t\treturn getSuccessAjaxResult(" + serviceBean + "." + methodNameStr + "(" + paramNameStr + "));");
+                    writeText("\t\treturn success(" + serviceBean + "." + methodNameStr + "(" + paramNameStr + "));");
                     writeText("\t}");
 
                     BuildComment.createMethodComment(bw, "根据" + methodName + "修改对象");
@@ -122,7 +122,7 @@ public class BuildController {
                     writeText("\t@PutMapping(\"/" + methodNameStr + "\")");
                     writeText("\tpublic AjaxResult " + methodNameStr + "(" + tableInfo.getBeanName() + " bean," + paramStr + ") {");
                     writeText("\t\t" + serviceBean + "." + methodNameStr + "(bean," + paramNameStr + ");");
-                    writeText("\t\treturn getSuccessAjaxResult(null);");
+                    writeText("\t\treturn success(null);");
                     writeText("\t}");
 
                     //根据主键删除
@@ -131,7 +131,7 @@ public class BuildController {
                     writeText("\t@DeleteMapping(\"/" + methodNameStr + "\")");
                     writeText("\tpublic AjaxResult " + methodNameStr + "(" + paramStr + ") {");
                     writeText("\t\t" + serviceBean + "." + methodNameStr + "(" + paramNameStr + ");");
-                    writeText("\t\treturn getSuccessAjaxResult(null);");
+                    writeText("\t\treturn success(null);");
                     writeText("\t}");
 
                     if(keyfieldInfoList.get(0).getAutoIncrementFlag()){
@@ -141,7 +141,7 @@ public class BuildController {
                         writeText("\t@DeleteMapping(\"/" + methodNameStr + "\")");
                         writeText("\tpublic AjaxResult " + methodNameStr + "(@RequestParam List<Integer> list) {");
                         writeText("\t\t" + serviceBean + "." + methodNameStr + "(list);");
-                        writeText("\t\treturn getSuccessAjaxResult(null);");
+                        writeText("\t\treturn success(null);");
                         writeText("\t}");
                     }
 

@@ -42,7 +42,7 @@ public class BuildBase {
         headerInfoList.add("package " + DullJavaConfig.getPackageVo() + ";");
         headerInfoList.add("import java.util.List;");
         headerInfoList.add("import java.util.ArrayList;");
-        build(headerInfoList, "PaginationResultVO", DullJavaConfig.getPathVo() + "/");
+        build(headerInfoList, "PaginationResultVo", DullJavaConfig.getPathVo() + "/");
 
         headerInfoList.clear();
         headerInfoList.add("package " + DullJavaConfig.getPackageUtilsEnum() + ";\n");

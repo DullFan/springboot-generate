@@ -40,7 +40,7 @@ public class BuildServiceImpl {
             writeText("import " + DullJavaConfig.getPackageUtilsEnum() + ".PageSizeEnum;");
             writeText("import " + DullJavaConfig.getPackageQuery() + "." + beanQuery + ";");
             writeText("import " + DullJavaConfig.getPackagePo() + "." + tableInfo.getBeanName() + ";");
-            writeText("import " + DullJavaConfig.getPackageVo() + ".PaginationResultVO;");
+            writeText("import " + DullJavaConfig.getPackageVo() + ".PaginationResultVo;");
             writeText("import " + DullJavaConfig.getPackageQuery() + ".SimplePage;");
 
             writeText("import " + DullJavaConfig.getPackageMapper() + "." + tableInfo.getBeanName() + DullJavaConfig.getBeanMapper()
@@ -76,14 +76,14 @@ public class BuildServiceImpl {
             //分页查询的方法
             BuildComment.createMethodComment(bw, "分页查询方法");
             writeText("\t@Override");
-            writeText("\tpublic PaginationResultVO<" + beanName + "> findListByPage(" + beanQuery
+            writeText("\tpublic PaginationResultVo<" + beanName + "> findListByPage(" + beanQuery
                     + " param) {");
             writeText("\t\tint count = this.findCountByParam(param);");
             writeText("\t\tint pageSize = param.getPageSize() == null ? PageSizeEnum.SIZE15.getSize() : param.getPageSize();");
             writeText("\t\tSimplePage page = new SimplePage(param.getPageNum(), count, pageSize);");
             writeText("\t\tparam.setSimplePage(page);");
             writeText("\t\tList<" + beanName + "> list = this.findListByParam(param);");
-            writeText("\t\tPaginationResultVO<" + beanName + "> result = new PaginationResultVO(count, page.getPageSize(), page.getPageNum(), page.getPageTotal(), list);");
+            writeText("\t\tPaginationResultVo<" + beanName + "> result = new PaginationResultVo(count, page.getPageSize(), page.getPageNum(), page.getPageTotal(), list);");
             writeText("\t\treturn result;");
             writeText("\t}");
             //新增
@@ -146,7 +146,7 @@ public class BuildServiceImpl {
                     //根据主键查询
                     BuildComment.createMethodComment(bw, "根据" + methodName + "获取对象");
                     writeText("\t@Override");
-                    writeText("\tpublic " + tableInfo.getBeanName() + " get" + tableInfo.getBeanName() + "By" + methodName.toString() + "("
+                    writeText("\tpublic " + tableInfo.getBeanName() + " find" + tableInfo.getBeanName() + "By" + methodName.toString() + "("
                             + paramStr.toString() + ") {");
                     writeText("\t\treturn this." + paramMapper + ".selectBy" + methodName.toString() + "(" + paramValueStr.toString() + ");");
                     writeText("\t}");

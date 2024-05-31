@@ -35,7 +35,7 @@ public class BuildService {
             writeText("package " + DullJavaConfig.getPackageService() + ";");
             writeText("import " + DullJavaConfig.getPackagePo() + "." + tableInfo.getBeanName() + ";");
             writeText("import " + DullJavaConfig.getPackageQuery() + "." + tableInfo.getBeanName() + DullJavaConfig.getBeanQuery() + ";");
-            writeText("import " + DullJavaConfig.getPackageVo() + ".PaginationResultVO;");
+            writeText("import " + DullJavaConfig.getPackageVo() + ".PaginationResultVo;");
             writeText("import org.apache.ibatis.annotations.Param;");
             writeText("import java.util.List;");
             if(tableInfo.getHaveBigDecimal()){
@@ -54,7 +54,7 @@ public class BuildService {
             writeText("\tInteger findCountByParam(" + tableInfo.getBeanName()+DullJavaConfig.getBeanQuery()   + " param);");
             //分页查询的方法
             BuildComment.createMethodComment(bw, "分页查询");
-            writeText("\tPaginationResultVO<" + beanName + "> findListByPage(" + tableInfo.getBeanName()+DullJavaConfig.getBeanQuery()
+            writeText("\tPaginationResultVo<" + beanName + "> findListByPage(" + tableInfo.getBeanName()+DullJavaConfig.getBeanQuery()
                     + " param);");
 
 
@@ -85,14 +85,14 @@ public class BuildService {
                         paramStr.append(",");
                         methodName.append("And");
                     }
-                    paramStr.append(column.getJavaType() + " " + column.getPropertyName() + "");
+                    paramStr.append(column.getJavaType()).append(" ").append(column.getPropertyName());
                     methodName.append(StringUtils.convertToCamelCase(column.getPropertyName()));
                     index++;
                 }
-                if (paramStr.length() > 0) {
+                if (!paramStr.isEmpty()) {
                     //根据主键查询
                     BuildComment.createMethodComment(bw, "根据" + methodName + "查询对象");
-                    writeText("\t" + tableInfo.getBeanName() + " get" + tableInfo.getBeanName() + "By" + methodName.toString() + "("
+                    writeText("\t" + tableInfo.getBeanName() + " find" + tableInfo.getBeanName() + "By" + methodName.toString() + "("
                             + paramStr.toString() + ");");
 
                     //根据主键方法
