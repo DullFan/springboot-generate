@@ -316,7 +316,7 @@ public class BuildMapperXML {
                 Integer index = 0;
                 for (FieldInfo fieldInfo : keyIndexInfoList) {
                     index++;
-                    methodParams.append(fieldInfo.getFieldName() + " = #{" + fieldInfo.getFieldName() + "}");
+                    methodParams.append(fieldInfo.getFieldName() + " = #{" + fieldInfo.getPropertyName() + "}");
                     methodName.append(StringUtils.convertToCamelCase(fieldInfo.getPropertyName()));
                     if (index < keyIndexInfoList.size()) {
                         methodName.append("And");
@@ -341,25 +341,6 @@ public class BuildMapperXML {
                     String deleteByIds = StringUtils.format("\t<delete id=\"{}\">\n" + "\t    delete from {} where {}\n" + "\t    in\n" + "\t    <foreach collection=\"list\" item=\"id\" separator=\",\" open=\"(\" close=\")\">\n" + "\t        #{id}\n" + "\t    </foreach>\n" + "\t</delete>", "deleteBy" + methodName + "Batch", tableInfo.getTableName(), fieldInfo.getFieldName());
                     writeText(deleteByIds);
                 }
-
-                writeText("\t<!--根据" + methodName + "更新-->");
-                writeText("\t<update id=\"updateBy" + methodName + "\" parameterType=\"" + poClass + "\">");
-                writeText("\t\tUPDATE " + tableInfo.getTableName());
-                writeText("\t\t<set>");
-                for (FieldInfo fieldInfo : tableInfo.getFieldInfoList()) {
-                    if (fieldInfo.getAutoIncrementFlag()) {
-                        continue;
-                    }
-                    writeText("\t\t\t<if test=\"bean." + fieldInfo.getPropertyName() + " != null\">");
-
-                    writeText("\t\t\t\t" + fieldInfo.getFieldName() + " = #{bean." + fieldInfo.getPropertyName() + "},");
-
-                    writeText("\t\t\t</if>");
-
-                }
-                writeText("\t\t</set>");
-                writeText("\t</update>");
-
             }
             writeText("</mapper>");
             bw.flush();
