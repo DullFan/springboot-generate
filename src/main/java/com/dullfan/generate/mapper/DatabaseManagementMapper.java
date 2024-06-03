@@ -9,11 +9,11 @@ import java.util.List;
 
 @Mapper
 public interface DatabaseManagementMapper {
-    List<Table> findListTables();
+    List<Table> selectListTables();
 
-    List<TableStructure> findTableStructure(String tableName);
+    List<TableStructure> selectTableStructure(String tableName);
 
-    List<TablePrimaryKey> findPrimaryKey(String tableName);
+    List<TablePrimaryKey> selectPrimaryKey(String tableName);
 
     Integer SELECT1();
 }

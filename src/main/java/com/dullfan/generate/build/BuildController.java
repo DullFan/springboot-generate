@@ -48,9 +48,9 @@ public class BuildController {
             if (tableInfo.getHaveBigDecimal()) {
                 writeText("import java.math.BigDecimal;");
             }
-
-            writeText("@RestController(\"" + tableInfo.getBeanName() + "Controller\")");
-            writeText("@RequestMapping(\"/" + StringUtils.lowerCaseFirstLetter(tableInfo.getBeanName()) + "\")");
+            String lowerBeanName = StringUtils.lowerCaseFirstLetter(tableInfo.getBeanName());
+            writeText("@RestController(\"" + lowerBeanName + "Controller\")");
+            writeText("@RequestMapping(\"/" + lowerBeanName + "\")");
             writeText("public class " + className + " extends ABaseController {");
 
             writeText("\t@Resource");
@@ -63,7 +63,7 @@ public class BuildController {
             String paramName = "param";
             writeText("\tpublic AjaxResult loadDataList(" + tableInfo.getBeanName() + DullJavaConfig.getBeanQuery() + " " + paramName + "){");
 
-            writeText("\t\treturn success(" + serviceBean + ".findListByPage(" + paramName + "));");
+            writeText("\t\treturn success(" + serviceBean + ".selectListByPage(" + paramName + "));");
             writeText("\t}");
 
             //新增
@@ -111,7 +111,7 @@ public class BuildController {
                 if (!paramStr.isEmpty()) {
                     //根据主键查询
                     BuildComment.createMethodComment(bw, "根据" + methodName + "查询对象");
-                    String methodNameStr = "find" + tableInfo.getBeanName() + "By" + methodName;
+                    String methodNameStr = "select" + tableInfo.getBeanName() + "By" + methodName;
                     writeText("\t@GetMapping(\"/" + methodNameStr + "\")");
                     writeText("\tpublic AjaxResult " + methodNameStr + "(" + paramStr + ") {");
                     writeText("\t\treturn success(" + serviceBean + "." + methodNameStr + "(" + paramNameStr + "));");

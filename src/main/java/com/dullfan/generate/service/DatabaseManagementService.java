@@ -24,14 +24,14 @@ public interface DatabaseManagementService {
      * @param tableStructureFlag 是否获取表结构
      * @return 表列表
      */
-    List<TableInfo> findListTables(Boolean tableStructureFlag);
+    List<TableInfo> selectListTables(Boolean tableStructureFlag);
 
     /**
      * 根据SQL语句生成代码
      *
      * @return 表列表
      */
-    List<TableInfo> findListSQLTables(String sql);
+    List<TableInfo> selectListSQLTables(String sql);
 
     /**
      * 设置配置

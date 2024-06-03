@@ -49,9 +49,9 @@ public class DatabaseManagementController {
         HashSet<String> databaseHashSet = new HashSet<>(Arrays.asList(StringUtils.trim(configBean.getDatabaseName()).split(",")));
         List<TableInfo> listTables;
         if (StringUtils.isEmpty(configBean.getSqlStatement())) {
-            listTables = service.findListTables(true);
+            listTables = service.selectListTables(true);
         } else {
-            listTables = service.findListSQLTables(configBean.getSqlStatement());
+            listTables = service.selectListSQLTables(configBean.getSqlStatement());
         }
         System.out.println(JSONObject.toJSONString(listTables));
         for (TableInfo tableInfo : listTables) {
@@ -83,7 +83,7 @@ public class DatabaseManagementController {
     public AjaxResult findAllSQLStructure(@RequestBody ConfigBean configBean) {
         service.updateConfig(configBean);
         System.out.println(configBean.toString());
-        List<TableInfo> listTables = service.findListTables(false);
+        List<TableInfo> listTables = service.selectListTables(false);
         return AjaxResult.success(listTables);
     }
 }

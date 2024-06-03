@@ -69,8 +69,8 @@ public class DatabaseManagementServiceImpl implements DatabaseManagementService 
     }
 
     @Override
-    public List<TableInfo> findListTables(Boolean tableStructureFlag) {
-        List<Table> listTables = databaseManagementMapper.findListTables();
+    public List<TableInfo> selectListTables(Boolean tableStructureFlag) {
+        List<Table> listTables = databaseManagementMapper.selectListTables();
         List<TableInfo> tableInfoList = new ArrayList<>();
         for (Table listTable : listTables) {
             TableInfo tableInfo = new TableInfo();
@@ -82,8 +82,8 @@ public class DatabaseManagementServiceImpl implements DatabaseManagementService 
             tableInfo.setBeanName(StringUtils.convertToCamelCase(beanName));
             tableInfo.setComment(listTable.getComment());
             tableInfo.setBeanParamName(beanName + DullJavaConfig.getTablePrefix());
-            if (tableStructureFlag) findTableStructure(tableInfo, null);
-            if (tableStructureFlag) findPrimaryKey(tableInfo, null);
+            if (tableStructureFlag) selectTableStructure(tableInfo, null);
+            if (tableStructureFlag) selectPrimaryKey(tableInfo, null);
             tableInfoList.add(tableInfo);
         }
         return tableInfoList;
@@ -95,7 +95,7 @@ public class DatabaseManagementServiceImpl implements DatabaseManagementService 
      * @return
      */
     @Override
-    public List<TableInfo> findListSQLTables(String sql) {
+    public List<TableInfo> selectListSQLTables(String sql) {
         List<SQLStatement> sqlStatements = SQLUtils.parseStatements(sql, DbType.mysql);
         List<TableInfo> tableInfoList = new ArrayList<>();
 
@@ -163,8 +163,8 @@ public class DatabaseManagementServiceImpl implements DatabaseManagementService 
                     }
                 }
                 tableInfoList.add(tableInfo);
-                findTableStructure(tableInfo,tableStructureList);
-                findPrimaryKey(tableInfo,tablePrimaryKeyList);
+                selectTableStructure(tableInfo,tableStructureList);
+                selectPrimaryKey(tableInfo,tablePrimaryKeyList);
             }
         }
         return tableInfoList;
@@ -199,11 +199,11 @@ public class DatabaseManagementServiceImpl implements DatabaseManagementService 
     /**
      * 获取表字段
      */
-    private void findTableStructure(TableInfo tableInfo, List<TableStructure> tableStructure) {
+    private void selectTableStructure(TableInfo tableInfo, List<TableStructure> tableStructure) {
         List<FieldInfo> fieldInfoList = new ArrayList<>();
         try {
             if (tableStructure == null) {
-                tableStructure = databaseManagementMapper.findTableStructure(tableInfo.getTableName());
+                tableStructure = databaseManagementMapper.selectTableStructure(tableInfo.getTableName());
             }
             boolean hasDateTime = false;
             boolean hasDate = false;
@@ -270,10 +270,10 @@ public class DatabaseManagementServiceImpl implements DatabaseManagementService 
      *
      * @param tableInfo 表信息
      */
-    private void findPrimaryKey(TableInfo tableInfo, List<TablePrimaryKey> primaryKeyList) {
+    private void selectPrimaryKey(TableInfo tableInfo, List<TablePrimaryKey> primaryKeyList) {
         try {
             if (primaryKeyList == null) {
-                primaryKeyList = databaseManagementMapper.findPrimaryKey(tableInfo.getTableName());
+                primaryKeyList = databaseManagementMapper.selectPrimaryKey(tableInfo.getTableName());
             }
             Map<String, FieldInfo> tempMap = new HashMap<>();
             for (FieldInfo fieldInfo : tableInfo.getFieldInfoList()) {

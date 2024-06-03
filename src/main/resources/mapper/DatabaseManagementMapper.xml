@@ -39,14 +39,14 @@
     </resultMap>
 
 
-    <select id="findListTables" resultMap="tableResultMap" resultType="com.dullfan.generate.entity.do_.Table">
+    <select id="selectListTables" resultMap="tableResultMap" resultType="com.dullfan.generate.entity.do_.Table">
         SHOW TABLE STATUS;
     </select>
 
-    <select id="findTableStructure" resultMap="tableStructureResultMap" resultType="com.dullfan.generate.entity.do_.TableStructure">
+    <select id="selectTableStructure" resultMap="tableStructureResultMap" resultType="com.dullfan.generate.entity.do_.TableStructure">
         SHOW FULL FIELDS FROM ${tableName};
     </select>
-    <select id="findPrimaryKey" resultMap="tablePrimaryKeyResultMap" resultType="com.dullfan.generate.entity.do_.TablePrimaryKey">
+    <select id="selectPrimaryKey" resultMap="tablePrimaryKeyResultMap" resultType="com.dullfan.generate.entity.do_.TablePrimaryKey">
         SHOW INDEX FROM ${tableName};
     </select>
 

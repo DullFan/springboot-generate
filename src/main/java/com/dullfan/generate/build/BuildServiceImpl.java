@@ -64,25 +64,25 @@ public class BuildServiceImpl {
             //根据条件查询列表
             BuildComment.createMethodComment(bw, "根据条件查询列表");
             writeText("\t@Override");
-            writeText("\tpublic List<" + beanName + "> findListByParam(" + beanQuery + " param) {");
+            writeText("\tpublic List<" + beanName + "> selectListByParam(" + beanQuery + " param) {");
             writeText("\t\treturn this." + paramMapper + ".selectList(param);");
             writeText("\t}");
             //根据条件查询记录数
             BuildComment.createMethodComment(bw, "根据条件查询列表");
             writeText("\t@Override");
-            writeText("\tpublic Integer findCountByParam(" + beanQuery + " param) {");
+            writeText("\tpublic Integer selectCountByParam(" + beanQuery + " param) {");
             writeText("\t\treturn this." + paramMapper + ".selectCount(param);");
             writeText("\t}");
             //分页查询的方法
             BuildComment.createMethodComment(bw, "分页查询方法");
             writeText("\t@Override");
-            writeText("\tpublic PaginationResultVo<" + beanName + "> findListByPage(" + beanQuery
+            writeText("\tpublic PaginationResultVo<" + beanName + "> selectListByPage(" + beanQuery
                     + " param) {");
-            writeText("\t\tint count = this.findCountByParam(param);");
+            writeText("\t\tint count = this.selectCountByParam(param);");
             writeText("\t\tint pageSize = param.getPageSize() == null ? PageSizeEnum.SIZE15.getSize() : param.getPageSize();");
             writeText("\t\tSimplePage page = new SimplePage(param.getPageNum(), count, pageSize);");
             writeText("\t\tparam.setSimplePage(page);");
-            writeText("\t\tList<" + beanName + "> list = this.findListByParam(param);");
+            writeText("\t\tList<" + beanName + "> list = this.selectListByParam(param);");
             writeText("\t\tPaginationResultVo<" + beanName + "> result = new PaginationResultVo(count, page.getPageSize(), page.getPageNum(), page.getPageTotal(), list);");
             writeText("\t\treturn result;");
             writeText("\t}");
@@ -146,7 +146,7 @@ public class BuildServiceImpl {
                     //根据主键查询
                     BuildComment.createMethodComment(bw, "根据" + methodName + "获取对象");
                     writeText("\t@Override");
-                    writeText("\tpublic " + tableInfo.getBeanName() + " find" + tableInfo.getBeanName() + "By" + methodName.toString() + "("
+                    writeText("\tpublic " + tableInfo.getBeanName() + " select" + tableInfo.getBeanName() + "By" + methodName.toString() + "("
                             + paramStr.toString() + ") {");
                     writeText("\t\treturn this." + paramMapper + ".selectBy" + methodName.toString() + "(" + paramValueStr.toString() + ");");
                     writeText("\t}");

@@ -48,13 +48,13 @@ public class BuildService {
 
             //根据条件查询列表
             BuildComment.createMethodComment(bw, "根据条件查询列表");
-            writeText("\tList<" + beanName + "> findListByParam(" + tableInfo.getBeanName()+DullJavaConfig.getBeanQuery()     + " param);");
+            writeText("\tList<" + beanName + "> selectListByParam(" + tableInfo.getBeanName()+DullJavaConfig.getBeanQuery()     + " param);");
             //根据条件查询数量
             BuildComment.createMethodComment(bw, "根据条件查询列表");
-            writeText("\tInteger findCountByParam(" + tableInfo.getBeanName()+DullJavaConfig.getBeanQuery()   + " param);");
+            writeText("\tInteger selectCountByParam(" + tableInfo.getBeanName()+DullJavaConfig.getBeanQuery()   + " param);");
             //分页查询的方法
             BuildComment.createMethodComment(bw, "分页查询");
-            writeText("\tPaginationResultVo<" + beanName + "> findListByPage(" + tableInfo.getBeanName()+DullJavaConfig.getBeanQuery()
+            writeText("\tPaginationResultVo<" + beanName + "> selectListByPage(" + tableInfo.getBeanName()+DullJavaConfig.getBeanQuery()
                     + " param);");
 
 
@@ -92,7 +92,7 @@ public class BuildService {
                 if (!paramStr.isEmpty()) {
                     //根据主键查询
                     BuildComment.createMethodComment(bw, "根据" + methodName + "查询对象");
-                    writeText("\t" + tableInfo.getBeanName() + " find" + tableInfo.getBeanName() + "By" + methodName.toString() + "("
+                    writeText("\t" + tableInfo.getBeanName() + " select" + tableInfo.getBeanName() + "By" + methodName.toString() + "("
                             + paramStr.toString() + ");");
 
                     //根据主键方法
