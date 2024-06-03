@@ -13,8 +13,8 @@ mybatis:
 dull:
   table-prefix: true
   bean-query: Query
-  path-base: /springboot/generate/
-#  path-base: D:/AResourceData/testResources/
+#  path-base: /springboot/generate/
+  path-base: D:/AResourceData/testResources/
   package-base: com.hahaha
   author: DullFan
   is-field-time-formatted: true

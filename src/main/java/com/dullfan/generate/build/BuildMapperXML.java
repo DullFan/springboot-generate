@@ -224,7 +224,7 @@ public class BuildMapperXML {
             //批量插入
             writeText("\t<!--批量插入-->");
             writeText("\t<insert id=\"insertBatch\" parameterType=\"" + poClass + "\">");
-            StringBuffer insertField = new StringBuffer();
+            StringBuilder insertField = new StringBuilder();
             for (FieldInfo fieldInfo : tableInfo.getFieldInfoList()) {
                 if (fieldInfo.getAutoIncrementFlag()) {
                     continue;
@@ -234,12 +234,12 @@ public class BuildMapperXML {
             String insertFieldStr = insertField.substring(0, insertField.lastIndexOf(","));
             writeText("\t\tINSERT INTO " + tableInfo.getTableName() + "(" + insertFieldStr + ")Values");
             writeText("\t\t<foreach collection=\"list\" item=\"item\" separator=\",\">");
-            StringBuffer insertProperty = new StringBuffer();
+            StringBuilder insertProperty = new StringBuilder();
             for (FieldInfo fieldInfo : tableInfo.getFieldInfoList()) {
                 if (fieldInfo.getAutoIncrementFlag()) {
                     continue;
                 }
-                insertProperty.append("#{item." + fieldInfo.getPropertyName() + "}").append(",");
+                insertProperty.append("#{item.").append(fieldInfo.getPropertyName()).append("}").append(",");
             }
             String insertPropertyStr = insertProperty.substring(0, insertProperty.lastIndexOf(","));
             writeText("\t\t\t" + "(" + insertPropertyStr + ")");
@@ -254,12 +254,12 @@ public class BuildMapperXML {
             writeText("\t\t\t" + "(" + insertPropertyStr + ")");
             writeText("\t\t</foreach>");
             writeText("\t\ton DUPLICATE key update");
-            StringBuffer insertBatchUpdate = new StringBuffer();
+            StringBuilder insertBatchUpdate = new StringBuilder();
             for (FieldInfo fieldInfo : tableInfo.getFieldInfoList()) {
                 if (fieldInfo.getAutoIncrementFlag()) {
                     continue;
                 }
-                insertBatchUpdate.append(fieldInfo.getFieldName() + " = VALUES(" + fieldInfo.getFieldName() + ")").append(",");
+                insertBatchUpdate.append(fieldInfo.getFieldName()).append(" = VALUES(").append(fieldInfo.getFieldName()).append(")").append(",");
             }
             String insertBatchUpdateStr = insertBatchUpdate.substring(0, insertBatchUpdate.lastIndexOf(","));
 //            writeText("\t\t" + "("+insertBatchUpdateStr+")");
@@ -313,10 +313,10 @@ public class BuildMapperXML {
                 List<FieldInfo> keyIndexInfoList = entry.getValue();
                 StringBuilder methodName = new StringBuilder();
                 StringBuilder methodParams = new StringBuilder();
-                Integer index = 0;
+                int index = 0;
                 for (FieldInfo fieldInfo : keyIndexInfoList) {
                     index++;
-                    methodParams.append(fieldInfo.getFieldName() + " = #{" + fieldInfo.getPropertyName() + "}");
+                    methodParams.append(fieldInfo.getFieldName()).append(" = #{").append(fieldInfo.getPropertyName()).append("}");
                     methodName.append(StringUtils.convertToCamelCase(fieldInfo.getPropertyName()));
                     if (index < keyIndexInfoList.size()) {
                         methodName.append("And");
@@ -338,7 +338,14 @@ public class BuildMapperXML {
                 if (entry.getValue().get(0).getAutoIncrementFlag()) {
                     FieldInfo fieldInfo = entry.getValue().get(0);
                     writeText("\t<!--根据" + methodName + "批量删除-->");
-                    String deleteByIds = StringUtils.format("\t<delete id=\"{}\">\n" + "\t    delete from {} where {}\n" + "\t    in\n" + "\t    <foreach collection=\"list\" item=\"id\" separator=\",\" open=\"(\" close=\")\">\n" + "\t        #{id}\n" + "\t    </foreach>\n" + "\t</delete>", "deleteBy" + methodName + "Batch", tableInfo.getTableName(), fieldInfo.getFieldName());
+                    String deleteByIds = StringUtils.format("""
+                            \t<delete id="{}">
+                            \t    delete from {} where {}
+                            \t    in
+                            \t    <foreach collection="list" item="id" separator="," open="(" close=")">
+                            \t        #{id}
+                            \t    </foreach>
+                            \t</delete>""", "deleteBy" + methodName + "Batch", tableInfo.getTableName(), fieldInfo.getFieldName());
                     writeText(deleteByIds);
                 }
             }

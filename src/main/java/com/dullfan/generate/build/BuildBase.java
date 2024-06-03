@@ -10,6 +10,7 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 生成基础类
@@ -82,7 +83,8 @@ public class BuildBase {
             out = new FileOutputStream(javaFile);
             outw = new OutputStreamWriter(out, StandardCharsets.UTF_8);
             bw = new BufferedWriter(outw);
-            InputStream in = ClassUtils.getDefaultClassLoader().getResourceAsStream("template/" + fileName + ".txt");
+            InputStream in = Objects.requireNonNull(ClassUtils.getDefaultClassLoader()).getResourceAsStream("template/" + fileName + ".txt");
+            assert in != null;
             inr = new InputStreamReader(in, StandardCharsets.UTF_8);
             bf = new BufferedReader(inr);
             for (String s : headerInfoList) {

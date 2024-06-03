@@ -66,12 +66,6 @@ public class BuildService {
             BuildComment.createMethodComment(bw, "批量新增");
             writeText("\tInteger addBatch(List<" + tableInfo.getBeanName() + "> listBean);");
 
-            BuildComment.createMethodComment(bw, "多条件更新");
-            writeText("\tInteger updateByParam(" + tableInfo.getBeanName() + " bean," + tableInfo.getBeanName()+DullJavaConfig.getBeanQuery()     + " param);");
-
-            BuildComment.createMethodComment(bw, "多条件删除");
-            writeText("\tInteger deleteByParam(" + tableInfo.getBeanName()+DullJavaConfig.getBeanQuery()  + " param);");
-
             for (Map.Entry<String, List<FieldInfo>> entry : keyMap.entrySet()) {
                 List<FieldInfo> keyfieldInfoList = entry.getValue();
                 StringBuffer paramStr = new StringBuffer();

@@ -102,26 +102,12 @@ public class BuildServiceImpl {
             writeText("\t\treturn this." + paramMapper + ".insertBatch(listBean);");
             writeText("\t}");
 
-            //多条件更新
-            BuildComment.createMethodComment(bw, "多条件更新");
-            writeText("\t@Override");
-            writeText("\tpublic Integer updateByParam(" + tableInfo.getBeanName() + " bean, " + beanQuery + " param) {");
-            writeText("\t\tStringTools.checkParam(param);");
-            writeText("\t\treturn this." + paramMapper + ".updateByParam(bean, param);");
-            writeText("\t}");
-            //多条件删除
-            BuildComment.createMethodComment(bw, "多条件删除");
-            writeText("\t@Override");
-            writeText("\tpublic Integer deleteByParam(" + beanQuery + " param) {");
-            writeText("\t\tStringTools.checkParam(param);");
-            writeText("\t\treturn this." + paramMapper + ".deleteByParam(param);");
-            writeText("\t}");
             Map<String, List<FieldInfo>> keyMap = tableInfo.getKeyIndexMap();
             for (Map.Entry<String, List<FieldInfo>> entry : keyMap.entrySet()) {
                 List<FieldInfo> keyColumnList = entry.getValue();
-                StringBuffer paramStr = new StringBuffer();
-                StringBuffer paramValueStr = new StringBuffer();
-                StringBuffer methodName = new StringBuffer();
+                StringBuilder paramStr = new StringBuilder();
+                StringBuilder paramValueStr = new StringBuilder();
+                StringBuilder methodName = new StringBuilder();
                 int index = 0;
                 for (FieldInfo column : keyColumnList) {
                     if (index > 0) {
@@ -129,30 +115,30 @@ public class BuildServiceImpl {
                         methodName.append("And");
                         paramValueStr.append(", ");
                     }
-                    paramStr.append(column.getJavaType() + " " + column.getPropertyName());
+                    paramStr.append(column.getJavaType()).append(" ").append(column.getPropertyName());
                     paramValueStr.append(column.getPropertyName());
                     methodName.append(StringUtils.upperCaseFirstLetter(column.getPropertyName()));
                     index++;
                 }
-                if (paramStr.length() > 0) {
+                if (!paramStr.isEmpty()) {
                     //根据主键查询
                     BuildComment.createMethodComment(bw, "根据" + methodName + "获取对象");
                     writeText("\t@Override");
-                    writeText("\tpublic " + tableInfo.getBeanName() + " select" + tableInfo.getBeanName() + "By" + methodName.toString() + "("
-                            + paramStr.toString() + ") {");
-                    writeText("\t\treturn this." + paramMapper + ".selectBy" + methodName.toString() + "(" + paramValueStr.toString() + ");");
+                    writeText("\tpublic " + tableInfo.getBeanName() + " select" + tableInfo.getBeanName() + "By" + methodName + "("
+                            + paramStr + ") {");
+                    writeText("\t\treturn this." + paramMapper + ".selectBy" + methodName + "(" + paramValueStr + ");");
                     writeText("\t}");
                     //根据主键修改
                     BuildComment.createMethodComment(bw, "根据" + methodName + "修改");
                     writeText("\t@Override");
                     String lowerCaseFirstLetter = StringUtils.lowerCaseFirstLetter(beanQuery);
-                    writeText("\tpublic Integer update" + tableInfo.getBeanName() + "By" + methodName.toString() + "(" + tableInfo.getBeanName() + " bean, "
-                            + paramStr.toString() + ") {");
+                    writeText("\tpublic Integer update" + tableInfo.getBeanName() + "By" + methodName + "(" + tableInfo.getBeanName() + " bean, "
+                            + paramStr + ") {");
                     writeText("\t\t" + beanQuery + " " + lowerCaseFirstLetter + " = "
                             + "new " + beanQuery + "();");
                     StringBuilder updateSetBuilder = new StringBuilder();
                     for (FieldInfo column : keyColumnList) {
-                        updateSetBuilder.append("\t\t " + lowerCaseFirstLetter + ".set")
+                        updateSetBuilder.append("\t\t ").append(lowerCaseFirstLetter).append(".set")
                                 .append(StringUtils.convertToCamelCase(column.getPropertyName()))
                                 .append("(")
                                 .append(column.getPropertyName())
@@ -165,8 +151,8 @@ public class BuildServiceImpl {
                     //根据主键删除
                     BuildComment.createMethodComment(bw, "根据" + methodName + "删除");
                     writeText("\t@Override");
-                    writeText("\tpublic Integer delete" + tableInfo.getBeanName() + "By" + methodName.toString() + "(" + paramStr.toString() + ") {");
-                    writeText("\t\treturn this." + paramMapper + ".deleteBy" + methodName.toString() + "(" + paramValueStr.toString() + ");");
+                    writeText("\tpublic Integer delete" + tableInfo.getBeanName() + "By" + methodName + "(" + paramStr + ") {");
+                    writeText("\t\treturn this." + paramMapper + ".deleteBy" + methodName + "(" + paramValueStr + ");");
 
                     writeText("\t}");
 
