@@ -45,6 +45,7 @@ public class BuildController {
             writeText("import org.springframework.web.bind.annotation.RestController;");
             writeText("import org.springframework.web.bind.annotation.*;");
             writeText(DullJavaConfig.getImportSpringBootHashMap().get("Resource"));
+
             if (tableInfo.getHaveBigDecimal()) {
                 writeText("import java.math.BigDecimal;");
             }
@@ -70,24 +71,16 @@ public class BuildController {
             BuildComment.createMethodComment(bw, "新增");
             writeText("\t@PostMapping(\"/add\")");
             writeText("\tpublic AjaxResult add(@RequestBody " + tableInfo.getBeanName() + " bean) {");
-            writeText("\t\t" + serviceBean + ".add(bean);");
-            writeText("\t\treturn success(null);");
+            writeText("\t\tInteger result = " + serviceBean + ".add(bean);");
+            writeText("\t\treturn determineOperationOutcome(result);");
             writeText("\t}");
 
             //批量新增的方法
             BuildComment.createMethodComment(bw, "批量新增");
             writeText("\t@PostMapping(\"/addBatch\")");
             writeText("\tpublic AjaxResult addBatch(@RequestBody List<" + tableInfo.getBeanName() + "> listBean) {");
-            writeText("\t\t" + serviceBean + ".addBatch(listBean);");
-            writeText("\t\treturn success(null);");
-            writeText("\t}");
-
-            //批量新增的方法
-            BuildComment.createMethodComment(bw, "批量新增/修改");
-            writeText("\t@PostMapping(\"/addOrUpdateBatch\")");
-            writeText("\tpublic AjaxResult addOrUpdateBatch(@RequestBody List<" + tableInfo.getBeanName() + "> listBean) {");
-            writeText("\t\t" + serviceBean + ".addBatch(listBean);");
-            writeText("\t\treturn success(null);");
+            writeText("\t\tInteger result = " + serviceBean + ".addBatch(listBean);");
+            writeText("\t\treturn determineOperationOutcome(result);");
             writeText("\t}");
 
             Map<String, List<FieldInfo>> keyMap = tableInfo.getKeyIndexMap();
@@ -121,8 +114,8 @@ public class BuildController {
                     methodNameStr = "update" + tableInfo.getBeanName() + "By" + methodName;
                     writeText("\t@PutMapping(\"/" + methodNameStr + "\")");
                     writeText("\tpublic AjaxResult " + methodNameStr + "(" + tableInfo.getBeanName() + " bean," + paramStr + ") {");
-                    writeText("\t\t" + serviceBean + "." + methodNameStr + "(bean," + paramNameStr + ");");
-                    writeText("\t\treturn success(null);");
+                    writeText("\t\tInteger result = " + serviceBean + "." + methodNameStr + "(bean," + paramNameStr + ");");
+                    writeText("\t\treturn determineOperationOutcome(result);");
                     writeText("\t}");
 
                     //根据主键删除
@@ -130,8 +123,8 @@ public class BuildController {
                     methodNameStr = "delete" + tableInfo.getBeanName() + "By" + methodName;
                     writeText("\t@DeleteMapping(\"/" + methodNameStr + "\")");
                     writeText("\tpublic AjaxResult " + methodNameStr + "(" + paramStr + ") {");
-                    writeText("\t\t" + serviceBean + "." + methodNameStr + "(" + paramNameStr + ");");
-                    writeText("\t\treturn success(null);");
+                    writeText("\t\tInteger result = " + serviceBean + "." + methodNameStr + "(" + paramNameStr + ");");
+                    writeText("\t\treturn determineOperationOutcome(result);");
                     writeText("\t}");
 
                     if(keyfieldInfoList.get(0).getAutoIncrementFlag()){
@@ -140,14 +133,13 @@ public class BuildController {
                         methodNameStr = "delete" + tableInfo.getBeanName() + "By" + methodName+"Batch";
                         writeText("\t@DeleteMapping(\"/" + methodNameStr + "\")");
                         writeText("\tpublic AjaxResult " + methodNameStr + "(@RequestParam List<Integer> list) {");
-                        writeText("\t\t" + serviceBean + "." + methodNameStr + "(list);");
-                        writeText("\t\treturn success(null);");
+                        writeText("\t\tInteger result = " + serviceBean + "." + methodNameStr + "(list);");
+                        writeText("\t\treturn determineOperationOutcome(result);");
                         writeText("\t}");
                     }
 
                 }
             }
-
             writeText("}");
             bw.flush();
         } catch (Exception e) {

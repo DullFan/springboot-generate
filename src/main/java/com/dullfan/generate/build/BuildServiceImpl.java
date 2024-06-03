@@ -101,15 +101,7 @@ public class BuildServiceImpl {
             writeText("\t\t}");
             writeText("\t\treturn this." + paramMapper + ".insertBatch(listBean);");
             writeText("\t}");
-            //批量新增
-            BuildComment.createMethodComment(bw, "批量新增或者修改");
-            writeText("\t@Override");
-            writeText("\tpublic Integer addOrUpdateBatch(List<" + tableInfo.getBeanName() + "> listBean) {");
-            writeText("\t\tif (listBean == null || listBean.isEmpty()) {");
-            writeText("\t\t\treturn 0;");
-            writeText("\t\t}");
-            writeText("\t\treturn this." + paramMapper + ".insertOrUpdateBatch(listBean);");
-            writeText("\t}");
+
             //多条件更新
             BuildComment.createMethodComment(bw, "多条件更新");
             writeText("\t@Override");

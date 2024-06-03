@@ -66,9 +66,6 @@ public class BuildService {
             BuildComment.createMethodComment(bw, "批量新增");
             writeText("\tInteger addBatch(List<" + tableInfo.getBeanName() + "> listBean);");
 
-            BuildComment.createMethodComment(bw, "批量新增/修改");
-            writeText("\tInteger addOrUpdateBatch(List<" + tableInfo.getBeanName() + "> listBean);");
-
             BuildComment.createMethodComment(bw, "多条件更新");
             writeText("\tInteger updateByParam(" + tableInfo.getBeanName() + " bean," + tableInfo.getBeanName()+DullJavaConfig.getBeanQuery()     + " param);");
 

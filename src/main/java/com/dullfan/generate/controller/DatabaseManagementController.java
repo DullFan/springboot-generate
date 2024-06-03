@@ -11,6 +11,7 @@ import com.dullfan.generate.utils.AjaxResult;
 import com.dullfan.generate.utils.FileUtils;
 import com.dullfan.generate.utils.StringUtils;
 import com.dullfan.generate.utils.extremely.ServiceException;
+import jakarta.annotation.PostConstruct;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.web.bind.annotation.*;
@@ -44,6 +45,21 @@ public class DatabaseManagementController {
         createFile(response, configBean, false);
     }
 
+    // 本地使用可以解除注释
+/*
+    @PostConstruct
+    public void init() {
+        DullJavaConfig.setSpringBoot3();
+        List<TableInfo> listTables;
+        listTables = service.selectListTables(true);
+        System.out.println(JSONObject.toJSONString(listTables));
+        for (TableInfo tableInfo : listTables) {
+            BuildFile.execute(tableInfo);
+        }
+        BuildBase.execute();
+    }
+*/
+
     public void createFile(HttpServletResponse response, ConfigBean configBean, Boolean isAll) {
         service.updateConfig(configBean);
         HashSet<String> databaseHashSet = new HashSet<>(Arrays.asList(StringUtils.trim(configBean.getDatabaseName()).split(",")));
@@ -59,6 +75,7 @@ public class DatabaseManagementController {
                 BuildFile.execute(tableInfo);
             }
         }
+        System.out.println(DullJavaConfig.getPathBase());
         String fileName = DullJavaConfig.getFileUUID() + ".zip";
         String fullPath = DullJavaConfig.getPathBaseTemporary() + fileName;
         BuildBase.execute();
@@ -70,6 +87,7 @@ public class DatabaseManagementController {
         // 删除生成的文件
         FileUtils.deleteFile(DullJavaConfig.getPathBaseTemporary() + DullJavaConfig.getFileUUID());
     }
+
     @PostMapping("/updateConfig")
     public AjaxResult updateConfig(@RequestBody ConfigBean configBean) {
         service.updateConfig(configBean);

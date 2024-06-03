@@ -4,12 +4,22 @@ public class ABaseController {
     protected <T> AjaxResult success(T t) {
         return AjaxResult.success(t);
     }
-
-    protected <T> AjaxResult error(RuntimeException e) {
+    protected AjaxResult error(RuntimeException e) {
         return AjaxResult.error(e.getMessage());
     }
-
-    protected <T> AjaxResult error(String t) {
+    protected AjaxResult error(String t) {
         return AjaxResult.error(t);
+    }
+
+    protected  AjaxResult error() {
+        return AjaxResult.error();
+    }
+
+    protected AjaxResult determineOperationOutcome(Integer result){
+        if(result > 0){
+            return success(null);
+        } else {
+            return error();
+        }
     }
 }

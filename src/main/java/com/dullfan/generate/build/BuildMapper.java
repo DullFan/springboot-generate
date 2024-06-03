@@ -54,7 +54,6 @@ public class BuildMapper {
                 for (FieldInfo fieldInfo : keyFieldInfos) {
                     index++;
                     methodName.append(StringUtils.convertToCamelCase(fieldInfo.getPropertyName()));
-
                     methodParams.append("@Param(\"").append(fieldInfo.getPropertyName()).append("\") ").append(fieldInfo.getJavaType()).append(" ").append(fieldInfo.getPropertyName());
                     if (index < keyFieldInfos.size()) {
                         methodName.append("And");

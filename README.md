@@ -236,14 +236,6 @@ public class TbBrandController extends ABaseController {
 		return getSuccessAjaxResult(null);
 	}
 	/**
-	 * 批量新增/修改
-	 */
-	@PostMapping("/addOrUpdateBatch")
-	public AjaxResult addOrUpdateBatch(@RequestBody List<TbBrand> listBean) {
-		tbBrandService.addBatch(listBean);
-		return getSuccessAjaxResult(null);
-	}
-	/**
 	 * 根据Id查询对象
 	 */
 	@GetMapping("/getTbBrandById")

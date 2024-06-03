@@ -2,9 +2,9 @@ spring:
   datasource:
     name: mysql
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/my_batis?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&useSSL=false&allowPublicKeyRetrieval=true
-    username: root
-    password: Fan292852.
+    url: jdbc:mysql://localhost:3306/xxxx?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&useSSL=false&allowPublicKeyRetrieval=true
+    username: xxx
+    password: xxxx
 server:
   port: 9968
 mybatis:
@@ -13,9 +13,9 @@ mybatis:
 dull:
   table-prefix: true
   bean-query: Query
-#  path-base: /springboot/generate/uploadPath
-  path-base: D:/AResourceData/testResources/
-  package-base: com.dullfan.CodeTest
+  path-base: /springboot/generate/
+#  path-base: D:/AResourceData/testResources/
+  package-base: com.hahaha
   author: DullFan
   is-field-time-formatted: true
   field-ignore: id,status
