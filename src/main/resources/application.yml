@@ -2,8 +2,8 @@ spring:
   datasource:
     name: mysql
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/xxxx?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&useSSL=false&allowPublicKeyRetrieval=true
-    username: xxx
+    url: jdbc:mysql://localhost:3306/xxx?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&useSSL=false&allowPublicKeyRetrieval=true
+    username: xxxx
     password: xxxx
 server:
   port: 9968

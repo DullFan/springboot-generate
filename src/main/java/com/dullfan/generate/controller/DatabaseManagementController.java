@@ -46,19 +46,17 @@ public class DatabaseManagementController {
     }
 
     // 本地使用可以解除注释
-/*
-    @PostConstruct
-    public void init() {
-        DullJavaConfig.setSpringBoot3();
-        List<TableInfo> listTables;
-        listTables = service.selectListTables(true);
-        System.out.println(JSONObject.toJSONString(listTables));
-        for (TableInfo tableInfo : listTables) {
-            BuildFile.execute(tableInfo);
-        }
-        BuildBase.execute();
-    }
-*/
+//    @PostConstruct
+//    public void init() {
+//        DullJavaConfig.setSpringBoot3();
+//        List<TableInfo> listTables;
+//        listTables = service.selectListTables(true);
+//        System.out.println(JSONObject.toJSONString(listTables));
+//        for (TableInfo tableInfo : listTables) {
+//            BuildFile.execute(tableInfo);
+//        }
+//        BuildBase.execute();
+//    }
 
     public void createFile(HttpServletResponse response, ConfigBean configBean, Boolean isAll) {
         service.updateConfig(configBean);

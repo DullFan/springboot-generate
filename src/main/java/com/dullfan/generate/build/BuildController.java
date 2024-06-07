@@ -40,9 +40,6 @@ public class BuildController {
             writeText("import " + DullJavaConfig.getPackageController() + ".ABaseController;");
             writeText("import org.apache.ibatis.annotations.Param;");
             writeText("import java.util.List;");
-            writeText("import org.springframework.web.bind.annotation.RequestBody;");
-            writeText("import org.springframework.web.bind.annotation.RequestMapping;");
-            writeText("import org.springframework.web.bind.annotation.RestController;");
             writeText("import org.springframework.web.bind.annotation.*;");
             writeText(DullJavaConfig.getImportSpringBootHashMap().get("Resource"));
 
@@ -62,7 +59,7 @@ public class BuildController {
             BuildComment.createMethodComment(bw, "根据条件分页查询");
             writeText("\t@GetMapping(\"/loadDataList\")");
             String paramName = "param";
-            writeText("\tpublic AjaxResult loadDataList(" + tableInfo.getBeanName() + DullJavaConfig.getBeanQuery() + " " + paramName + "){");
+            writeText("\tpublic AjaxResult loadDataList(@RequestParam " + tableInfo.getBeanName() + DullJavaConfig.getBeanQuery() + " " + paramName + "){");
 
             writeText("\t\treturn success(" + serviceBean + ".selectListByPage(" + paramName + "));");
             writeText("\t}");
@@ -106,14 +103,14 @@ public class BuildController {
                     BuildComment.createMethodComment(bw, "根据" + methodName + "查询对象");
                     String methodNameStr = "select" + tableInfo.getBeanName() + "By" + methodName;
                     writeText("\t@GetMapping(\"/" + methodNameStr + "\")");
-                    writeText("\tpublic AjaxResult " + methodNameStr + "(" + paramStr + ") {");
+                    writeText("\tpublic AjaxResult " + methodNameStr + "(@RequestParam " + paramStr + ") {");
                     writeText("\t\treturn success(" + serviceBean + "." + methodNameStr + "(" + paramNameStr + "));");
                     writeText("\t}");
 
                     BuildComment.createMethodComment(bw, "根据" + methodName + "修改对象");
                     methodNameStr = "update" + tableInfo.getBeanName() + "By" + methodName;
                     writeText("\t@PutMapping(\"/" + methodNameStr + "\")");
-                    writeText("\tpublic AjaxResult " + methodNameStr + "(" + tableInfo.getBeanName() + " bean," + paramStr + ") {");
+                    writeText("\tpublic AjaxResult " + methodNameStr + "(@RequestBody " + tableInfo.getBeanName() + " bean,@RequestParam " + paramStr + ") {");
                     writeText("\t\tInteger result = " + serviceBean + "." + methodNameStr + "(bean," + paramNameStr + ");");
                     writeText("\t\treturn determineOperationOutcome(result);");
                     writeText("\t}");
@@ -122,7 +119,7 @@ public class BuildController {
                     BuildComment.createMethodComment(bw, "根据" + methodName + "删除");
                     methodNameStr = "delete" + tableInfo.getBeanName() + "By" + methodName;
                     writeText("\t@DeleteMapping(\"/" + methodNameStr + "\")");
-                    writeText("\tpublic AjaxResult " + methodNameStr + "(" + paramStr + ") {");
+                    writeText("\tpublic AjaxResult " + methodNameStr + "(@RequestParam " + paramStr + ") {");
                     writeText("\t\tInteger result = " + serviceBean + "." + methodNameStr + "(" + paramNameStr + ");");
                     writeText("\t\treturn determineOperationOutcome(result);");
                     writeText("\t}");
