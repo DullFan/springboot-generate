@@ -51,7 +51,7 @@ public class BuildBase {
 
         headerInfoList.clear();
         headerInfoList.add("package " + DullJavaConfig.getPackageUtils() + ";\n");
-        build(headerInfoList, "StringTools", DullJavaConfig.getPathUtils() + "/");
+        build(headerInfoList, "StringUtils", DullJavaConfig.getPathUtils() + "/");
 
         headerInfoList.clear();
         headerInfoList.add("package " + DullJavaConfig.getPackageQuery() + ";\n");

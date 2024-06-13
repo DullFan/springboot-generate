@@ -47,7 +47,7 @@ public class BuildServiceImpl {
                     + ";");
             writeText("import " + DullJavaConfig.getPackageService() + "." + tableInfo.getBeanName() + DullJavaConfig.getBeanService()
                     + ";");
-            writeText("import " + DullJavaConfig.getPackageUtils() + ".StringTools;");
+            writeText("import " + DullJavaConfig.getPackageUtils() + ".StringUtils;");
 
             BuildComment.createClassComment(bw, tableInfo.getComment() + " 业务接口实现");
 
