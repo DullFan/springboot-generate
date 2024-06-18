@@ -105,7 +105,12 @@ public class DatabaseManagementServiceImpl implements DatabaseManagementService 
             if (sqlStatement instanceof MySqlCreateTableStatement) {
                 MySqlCreateTableStatement createTableStatement = (MySqlCreateTableStatement) sqlStatement;
                 String tableName = createTableStatement.getTableName().replaceAll("`", "");
-                String tableComment = createTableStatement.getComment().toString().replaceAll("'", "");
+                String tableComment;
+                if(createTableStatement.getComment() == null){
+                    tableComment = "";
+                } else {
+                    tableComment = createTableStatement.getComment().toString().replaceAll("'", "");
+                }
                 TableInfo tableInfo = new TableInfo();
                 tableInfo.setTableName(tableName);
                 if (DullJavaConfig.getTablePrefix()) {
@@ -117,7 +122,12 @@ public class DatabaseManagementServiceImpl implements DatabaseManagementService 
                 for (SQLColumnDefinition columnDefinition : createTableStatement.getColumnDefinitions()) {
                     TableStructure tableStructure = new TableStructure();
                     String columnName = columnDefinition.getName().toString().replaceAll("`", "");
-                    String columnComment = columnDefinition.getComment().toString().replaceAll("'", "");
+                    String columnComment;
+                    if(createTableStatement.getComment() == null){
+                        columnComment = "";
+                    } else {
+                        columnComment = columnDefinition.getComment().toString().replaceAll("'", "");
+                    }
                     String columnType = columnDefinition.getDataType().toString();
                     if (columnDefinition.isAutoIncrement()) {
                         tableStructure.setExtra("auto_increment");
