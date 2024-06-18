@@ -11,7 +11,7 @@ mybatis:
   mapper-locations: classpath:mapper/*.xml
 
 dull:
-  table-prefix: true
+  table-prefix: false
   bean-query: Query
 #  path-base: /springboot/generate/
   path-base: D:/AResourceData/testResources/

@@ -123,7 +123,7 @@ public class DatabaseManagementServiceImpl implements DatabaseManagementService 
                     TableStructure tableStructure = new TableStructure();
                     String columnName = columnDefinition.getName().toString().replaceAll("`", "");
                     String columnComment;
-                    if(createTableStatement.getComment() == null){
+                    if(columnDefinition.getComment() == null){
                         columnComment = "";
                     } else {
                         columnComment = columnDefinition.getComment().toString().replaceAll("'", "");

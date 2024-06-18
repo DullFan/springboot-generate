@@ -8,7 +8,7 @@ public class ConfigBean {
     /**
      * 是否忽略表前缀
      */
-    private boolean tablePrefix = true;
+    private boolean tablePrefix = false;
     /**
      * 包路径
      */
