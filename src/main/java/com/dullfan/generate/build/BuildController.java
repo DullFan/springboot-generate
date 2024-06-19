@@ -59,7 +59,7 @@ public class BuildController {
             BuildComment.createMethodComment(bw, "根据条件分页查询");
             writeText("\t@GetMapping(\"/loadDataList\")");
             String paramName = "param";
-            writeText("\tpublic AjaxResult loadDataList(@RequestParam " + tableInfo.getBeanName() + DullJavaConfig.getBeanQuery() + " " + paramName + "){");
+            writeText("\tpublic AjaxResult loadDataList(" + tableInfo.getBeanName() + DullJavaConfig.getBeanQuery() + " " + paramName + "){");
 
             writeText("\t\treturn success(" + serviceBean + ".selectListByPage(" + paramName + "));");
             writeText("\t}");
