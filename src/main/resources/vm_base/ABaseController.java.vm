@@ -1,0 +1,27 @@
+package ${packageName}.controller;
+
+import ${packageName}.entity.vo.Result;
+
+public class ABaseController {
+    protected <T> Result success(T t) {
+        return Result.success(t);
+    }
+    protected Result error(RuntimeException e) {
+        return Result.error(e.getMessage());
+    }
+    protected Result error(String t) {
+        return Result.error(t);
+    }
+
+    protected  Result error() {
+        return Result.error();
+    }
+
+    protected Result determineOperationOutcome(Integer result){
+        if(result > 0){
+            return success(null);
+        } else {
+            return error();
+        }
+    }
+}

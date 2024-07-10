@@ -1,8 +1,7 @@
+package ${packageName}.mappers;
 
 import org.apache.ibatis.annotations.Param;
-
 import java.util.List;
-
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
@@ -14,19 +13,9 @@ public interface ABaseMapper<T, P> {
     Integer insert(@Param("bean") T t);
 
     /**
-     * 插入或者更新
-     */
-    Integer insertOrUpdate(@Param("bean") T t);
-
-    /**
      * 批量插入
      */
     Integer insertBatch(@Param("list") List<T> list);
-
-    /**
-     * 批量插入或者更新
-     */
-    Integer insertOrUpdateBatch(@Param("list") List<T> list);
 
     /**
      * 根据参数查询集合
@@ -39,12 +28,12 @@ public interface ABaseMapper<T, P> {
     Integer selectCount(@Param("query") P p);
 
     /**
-     * updateByParams:(多条件更新)
+     * 多条件更新
      */
     Integer updateByParam(@Param("bean") T t,@Param("query") P p);
 
     /**
-      * deleteByParam:(多条件删除)
-    */
+     * 多条件删除
+     */
     Integer deleteByParam(@Param("query") P p);
 }

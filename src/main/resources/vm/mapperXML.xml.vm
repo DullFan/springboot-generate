@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="${packageName}.mappers.${className}Mapper">
+
+    <!--实体映射-->
+    <resultMap id="base_result_map" type="${packageName}.entity.po.${className}">
+#foreach($item in $fieldInfoList)
+        <!--${item.comment}-->
+#if($item.autoIncrementFlag)
+        <id column="${item.fieldName}" property="${item.propertyName}"/>
+#else
+        <result column="${item.fieldName}" property="${item.propertyName}"/>
+#end
+#end
+    </resultMap>
+
+    <!--通用查询列-->
+    <sql id="base_column_list">
+#foreach($item in $fieldInfoList)
+        $item.fieldName#if($foreach.index < $fieldInfoList.size() - 1),#end
+#end
+    </sql>
+
+    <!--基本查询条件-->
+    <sql id="base_query_condition">
+#foreach($item in $fieldInfoList)
+        <if test="query.$item.propertyName != null #if($item.javaType == "String")and query.$item.propertyName != ''#end">
+            and $item.fieldName = #{query.$item.propertyName}
+        </if>
+#end
+    </sql>
+
+    <!--扩展查询条件-->
+    <sql id="base_query_condition_extend">
+#foreach($item in $extendFieldInfoList)
+        <if test="query.$item.propertyName != null #if($item.javaType == "String")and query.$item.propertyName != ''#end">
+            #if($item.javaType == "String")
+            and $item.fieldName like concat('%',#{query.$item.propertyName},'%')
+            #elseif($StringUtils.endsWithStart($item.propertyName))
+            and $item.fieldName >= #{query.$item.propertyName}
+            #else
+            <![CDATA[and create_time < #{query.$item.propertyName}]]>
+            #end
+        </if>
+#end
+    </sql>
+
+    <!--通用查询条件列-->
+    <sql id="query_condition">
+        <where>
+            <include refid="base_query_condition"/>
+            <include refid="base_query_condition_extend"/>
+        </where>
+    </sql>
+
+    <!--查询列表-->
+    <select id="selectList" resultMap="base_result_map">
+        SELECT <include refid="base_column_list"/> FROM $tableName <include refid="query_condition"/>
+        <if test="query.orderBy!=null"> order by ${query.orderBy} </if>
+        <if test="query.simplePage!=null"> limit ${query.simplePage.start},${query.simplePage.end} </if>
+    </select>
+
+    <!--查询数量-->
+    <select id="selectCount" resultType="java.lang.Integer">
+        select count(1) FROM $tableName
+        <include refid="query_condition"/>
+    </select>
+
+    <!--插入，匹配有值的字段-->
+    <insert id="insert" parameterType="${packageName}.entity.po.${className}" #if($keyIndexMap.containsKey("PRIMARY")) #if($keyIndexMap.get("PRIMARY").get(0).autoIncrementFlag)useGeneratedKeys="true" keyProperty="$keyIndexMap.get("PRIMARY").get(0).propertyName"#end#end>
+        insert into $tableName
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+#foreach($item in $fieldInfoList)
+            <if test="bean.$item.propertyName != null#if($item.javaType == "String") and bean.$item.propertyName != ''#end">
+                $item.fieldName,
+            </if>
+#end
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+#foreach($item in $fieldInfoList)
+            <if test="bean.$item.propertyName != null#if($item.javaType == "String") and bean.$item.propertyName != ''#end">
+                #{bean.$item.propertyName},
+            </if>
+#end
+        </trim>
+    </insert>
+
+    <!--批量插入-->
+    <insert id="insertBatch">
+        INSERT INTO $tableName (#foreach($item in $fieldInfoList)#if(!$item.autoIncrementFlag)$item.fieldName#if($foreach.index < $fieldInfoList.size() - 1),#end#end#end)
+        VALUES
+        <foreach collection="list" item="item" separator=",">
+            (#foreach($item in $fieldInfoList)#if(!$item.autoIncrementFlag)#{item.$item.propertyName}#if($foreach.index < $fieldInfoList.size() - 1),#end#end#end)
+        </foreach>
+    </insert>
+
+
+    <!--多条件修改-->
+    <update id="updateByParam" parameterType="${packageName}.entity.po.${className}">
+        UPDATE $tableName
+        <set>
+#foreach($item in $fieldInfoList)
+#if(!$item.autoIncrementFlag)
+            <if test="bean.$item.propertyName != null#if($item.javaType == "String") and bean.$item.propertyName != ''#end">
+                $item.fieldName = #{bean.$item.propertyName},
+            </if>
+#end
+#end
+        </set>
+        <include refid="query_condition" />
+    </update>
+
+    <!--多条件删除-->
+    <delete id="deleteByParam">
+        DELETE FROM $tableName
+        <include refid="query_condition" />
+    </delete>
+
+#foreach($keyData in $keyIndexMap.entrySet())
+    <!--根据#funName($keyData)查询-->
+    <select id="selectBy#funName($keyData)" resultMap="base_result_map">
+        SELECT <include refid="base_column_list"/> FROM $tableName WHERE #sqlParameterName($keyData)
+    </select>
+
+    <!--根据#funName($keyData)删除-->
+    <delete id="deleteBy#funName($keyData)">
+        DELETE FROM $tableName WHERE #sqlParameterName($keyData)
+    </delete>
+
+#if($keyData.getValue().get(0).autoIncrementFlag)
+    <!--根据#funName($keyData)批量删除-->
+    <delete id="deleteBy#funName($keyData)Batch">
+        DELETE FROM $tableName WHERE #sqlDeleteFunName($keyData)
+        IN
+        <foreach collection="list" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </delete>
+#end
+#end
+## 方法名称
+#macro(funName $keyData)
+    #foreach($item in $keyData.getValue())$StringUtils.convertToCamelCase($item.propertyName)#if($foreach.index < $keyData.getValue().size() - 1)And#end#end
+#end
+## 参数名称
+#macro(sqlParameterName $keyData)
+    #foreach($item in $keyData.getValue())$item.fieldName = #{$item.propertyName}#if($foreach.index < $keyData.getValue().size() - 1) AND #end#end
+#end
+## Delete方法名称
+#macro(sqlDeleteFunName $keyData)
+    #foreach($item in $keyData.getValue())$item.fieldName#if($foreach.index < $keyData.getValue().size() - 1),#end#end
+#end
+</mapper>
+
+

@@ -1,0 +1,45 @@
+package ${packageName}.mappers;
+
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Mapper;
+import java.util.List;
+import ${packageName}.entity.po.${className};
+import ${packageName}.entity.query.${className}Query;
+
+/**
+ * @author ${author}
+ * @date ${datetime}
+ */
+@Mapper
+public interface ${className}Mapper extends ABaseMapper<${className},${className}Query> {
+
+#foreach($keyData in ${keyIndexMap.entrySet()})
+    /**
+    * 根据 #funName($keyData) 查询
+    */
+    ${className} selectBy#funName($keyData)(#parameterName($keyData));
+
+    /**
+    * 根据 #funName($keyData) 删除
+    */
+    Integer deleteBy#funName($keyData)(#parameterName($keyData));
+
+#if($keyData.getValue().get(0).getAutoIncrementFlag())
+
+    /**
+    * 根据 #funName($keyData) 批量删除
+    */
+    Integer deleteBy#funName($keyData)Batch(@Param("list") List<Integer> list);
+#end
+#end
+
+## 方法名称
+#macro(funName $keyData)
+    #foreach($item in $keyData.getValue())$StringUtils.convertToCamelCase($item.propertyName)#if($foreach.index < $keyData.getValue().size() - 1)And#end#end
+#end
+## 参数名称
+#macro(parameterName $keyData)
+    #foreach($item in $keyData.getValue())@Param("$item.propertyName")$item.javaType $item.propertyName#if($foreach.index < $keyData.getValue().size() - 1),#end#end
+#end
+}
+

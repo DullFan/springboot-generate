@@ -1,0 +1,73 @@
+package ${packageName}.entity.po;
+
+import java.io.Serializable;
+#if($enableLombok)
+import lombok.Data;
+#end
+#if($hasDateTime || $hasDate)
+import java.util.Date;
+#end
+#if($hasBigDecimal)
+import java.math.BigDecimal;
+#end
+#if($hasDateTime || $hasDate)
+import com.fasterxml.jackson.annotation.JsonFormat;
+import org.springframework.format.annotation.DateTimeFormat;
+#end
+#if($hasJsonIgnore)
+import com.fasterxml.jackson.annotation.JsonIgnore;
+#end
+
+/**
+ * @author ${author}
+ * @date ${datetime}
+ */
+#if($enableLombok)
+@Data
+#end
+public class ${className} implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+    ## 循环生成变量
+#foreach ($item in $fieldInfoList)
+#if(!$item.comment.isEmpty())
+
+    /**
+     * ${item.comment}
+     */
+#end
+#if($item.sqlType == "datetime")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+#end
+#if($item.sqlType == "date")
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+#end
+#if($item.haveJsonIgnore)
+    @JsonIgnore
+#end
+    private ${item.javaType} ${item.propertyName};
+#end
+
+## 生成get set方法
+#if(!$enableLombok)
+#foreach ($item in $fieldInfoList)
+    public ${item.javaType} get${item.propertyName.substring(0,1).toUpperCase()}${item.propertyName.substring(1)}() {
+        return this.${item.propertyName};
+    }
+
+    public void set${item.propertyName.substring(0,1).toUpperCase()}${item.propertyName.substring(1)} (${item.javaType} ${item.propertyName}) {
+        this.${item.propertyName} = ${item.propertyName};
+    }
+
+#end
+#end
+## 重写toString方法
+#if(!$enableLombok)
+    @Override
+    public String toString () {
+        return "#foreach ($item in $fieldInfoList)${item.propertyName}=" + ${item.propertyName} + ",#end" ;
+    }
+#end
+}

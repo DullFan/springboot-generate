@@ -1,0 +1,97 @@
+package ${packageName}.controller;
+
+import java.util.List;
+import ${packageName}.entity.po.${className};
+import ${packageName}.entity.query.${className}Query;
+import ${packageName}.service.${className}Service;
+import ${packageName}.entity.vo.Result;
+$importSpringBootHashMap.get("Resource")
+import org.springframework.web.bind.annotation.*;
+
+@RestController("${className}Controller")
+@RequestMapping("/${StringUtils.lowerCaseFirstLetter($className)}")
+public class ${className}Controller extends ABaseController  {
+
+    @Resource
+    ${className}Service #classNameServiceVariable()
+
+    /**
+     * 分页查询
+     */
+    @GetMapping("/loadDataList")
+    public Result selectListByPage(${className}Query param){
+        return success(#classNameService().selectListByPage(param));
+    }
+
+    /**
+     * 新增
+     */
+    @PostMapping("/insert")
+    public Result insert(@RequestBody ${className} bean){
+        Integer result = #classNameService().insert(bean);
+        return determineOperationOutcome(result);
+    }
+
+    /**
+     * 批量新增
+     */
+    @PostMapping("/insertBatch")
+    public Result insertBatch(@RequestBody List<${className}> listBean){
+        Integer result = #classNameService().insertBatch(listBean);
+        return determineOperationOutcome(result);
+    }
+
+#foreach($keyData in ${keyIndexMap.entrySet()})
+    /**
+     * 根据 #funName($keyData) 查询
+     */
+    @GetMapping("/selectBy#funName($keyData)")
+    public Result selectBy#funName($keyData)(#parameterNameController2($keyData)){
+        return success(#classNameService().selectBy#funName($keyData)(#parameterNameController3($keyData)));
+    }
+
+    /**
+     * 根据 #funName($keyData) 修改
+     */
+    @PutMapping("/updateBy#funName($keyData)")
+    public Result updateBy#funName($keyData)(@RequestBody $className bean,#parameterNameController2($keyData)){
+        Integer result = #classNameService().updateBy#funName($keyData)(bean,#parameterNameController3($keyData));
+        return determineOperationOutcome(result);
+    }
+
+
+    /**
+     * 根据 #funName($keyData) 删除
+     */
+    @DeleteMapping("/deleteBy#funName($keyData)")
+    public Result deleteBy#funName($keyData)(#parameterNameController2($keyData)){
+        Integer result = #classNameService().deleteBy#funName($keyData)(#parameterNameController3($keyData));
+        return determineOperationOutcome(result);
+    }
+#if($keyData.getValue().get(0).getAutoIncrementFlag())
+    /**
+     * 根据 #funName($keyData) 批量删除
+     */
+    @DeleteMapping("/deleteBy#funName($keyData)Batch")
+    public Result deleteBy#funName($keyData)Batch(@RequestParam List<Integer> list){
+        Integer result = #classNameService().deleteBy#funName($keyData)Batch(list);
+        return determineOperationOutcome(result);
+    }
+#end
+#end
+## 方法名称 如 IdAndNameAndAge
+#macro(funName $keyData)
+    #foreach($item in $keyData.getValue())$StringUtils.convertToCamelCase($item.propertyName)#if($foreach.index < $keyData.getValue().size() - 1)And#end#end
+#end
+## Controller名称
+#macro(classNameServiceVariable)$StringUtils.lowerCaseFirstLetter($className)Service;#end
+#macro(classNameService)$StringUtils.lowerCaseFirstLetter($className)Service#end
+## 参数名称 如 int id,String name,int age
+#macro(parameterNameController2 $keyData)
+    #foreach($item in $keyData.getValue())@RequestParam $item.javaType $item.propertyName#if($foreach.index < $keyData.getValue().size() - 1),#end#end
+#end
+## 参数名称 如 id,name,age
+#macro(parameterNameController3 $keyData)
+    #foreach($item in $keyData.getValue())$item.propertyName#if($foreach.index < $keyData.getValue().size() - 1),#end#end
+#end
+}

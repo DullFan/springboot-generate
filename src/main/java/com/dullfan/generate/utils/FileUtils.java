@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.*;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 public class FileUtils {
@@ -45,7 +46,7 @@ public class FileUtils {
      */
     private static void zipFile(File file, String fileName, ZipOutputStream zos) throws IOException {
         if (file.isHidden()) {
-            return; // Skip hidden files
+            return;
         }
         if (file.isDirectory()) {
             File[] children = file.listFiles();
@@ -95,26 +96,38 @@ public class FileUtils {
         return file.delete();
     }
 
-    public static void downloadFile(HttpServletResponse response){
-        String fileName = DullJavaConfig.getFileUUID() + ".zip";
-        String fullPath = DullJavaConfig.getPathBaseTemporary() + fileName;
-        File file = new File(fullPath);
-        response.setContentType("application/octet-stream;charset=utf-8");
-        response.addHeader("Content-Disposition", "attachment; filename=" + fileName);
-        FileInputStream fileInputStream;
-        try {
-            fileInputStream = new FileInputStream(file);
-            int len;
-            byte[] buffer = new byte[1024];
-            OutputStream outputStream = response.getOutputStream();
-            while((len=fileInputStream.read(buffer))>0) {
-                outputStream.write(buffer, 0, len);
+    /**
+     * 解压zip压缩包
+     * @param byteArray 压缩包字节
+     * @param targetDir 导出的路径
+     * @throws IOException 异常
+     */
+    public static void unzip(byte[] byteArray, String targetDir) throws IOException {
+        try (ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(byteArray);
+             ZipInputStream zipInputStream = new ZipInputStream(byteArrayInputStream)) {
+
+            ZipEntry entry;
+            while ((entry = zipInputStream.getNextEntry()) != null) {
+                File file = new File(targetDir, entry.getName());
+
+                if (entry.isDirectory()) {
+                    file.mkdirs();
+                } else {
+                    File parent = file.getParentFile();
+                    if (!parent.exists()) {
+                        parent.mkdirs();
+                    }
+
+                    try (FileOutputStream fileOutputStream = new FileOutputStream(file)) {
+                        byte[] buffer = new byte[1024];
+                        int len;
+                        while ((len = zipInputStream.read(buffer)) > 0) {
+                            fileOutputStream.write(buffer, 0, len);
+                        }
+                    }
+                }
+                zipInputStream.closeEntry();
             }
-            fileInputStream.close();
-            outputStream.flush();
-            outputStream.close();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
         }
     }
 }

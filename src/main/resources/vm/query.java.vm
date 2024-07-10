@@ -1,0 +1,97 @@
+package ${packageName}.entity.query;
+
+#if($enableLombok)
+import lombok.Data;
+#end
+#if($hasDateTime || $hasDate)
+import java.util.Date;
+#end
+#if($hasBigDecimal)
+import java.math.BigDecimal;
+#end
+#if($hasDateTime || $hasDate)
+import com.fasterxml.jackson.annotation.JsonFormat;
+import org.springframework.format.annotation.DateTimeFormat;
+#end
+#if($hasJsonIgnore)
+import com.fasterxml.jackson.annotation.JsonIgnore;
+#end
+
+/**
+ * @author ${author}
+ * @date ${datetime}
+ */
+#if($enableLombok)
+@Data
+#end
+public class ${className}Query extends ABaseParam {
+
+    ## 循环生成变量
+#foreach ($item in $fieldInfoList)
+#if(!$item.comment.isEmpty())
+
+    /**
+     * ${item.comment}
+     */
+#end
+#if($item.sqlType == "datetime")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+#end
+#if($item.sqlType == "date")
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+#end
+#if($item.haveJsonIgnore)
+    @JsonIgnore
+#end
+    private ${item.javaType} ${item.propertyName};
+#end
+
+#foreach ($extendItem in $extendFieldInfoList)
+
+#if($extendItem.sqlType == "datetime" || $extendItem.sqlType == "timestamp")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+#end
+#if($extendItem.sqlType == "date")
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+#end
+    private ${extendItem.javaType} ${extendItem.propertyName};
+#end
+
+
+## 生成get set方法
+#if(!$enableLombok)
+#foreach ($item in $fieldInfoList)
+    public ${item.javaType} get${item.propertyName.substring(0,1).toUpperCase()}${item.propertyName.substring(1)}() {
+        return this.${item.propertyName};
+    }
+
+    public void set${item.propertyName.substring(0,1).toUpperCase()}${item.propertyName.substring(1)} (${item.javaType} ${item.propertyName}) {
+        this.${item.propertyName} = ${item.propertyName};
+    }
+
+#end
+
+#foreach ($extendItem in $extendFieldInfoList)
+    public ${extendItem.javaType} get${extendItem.propertyName.substring(0,1).toUpperCase()}${extendItem.propertyName.substring(1)}() {
+        return this.${extendItem.propertyName};
+    }
+
+    public void set${extendItem.propertyName.substring(0,1).toUpperCase()}${extendItem.propertyName.substring(1)} (${extendItem.javaType} ${extendItem.propertyName}) {
+        this.${extendItem.propertyName} = ${extendItem.propertyName};
+    }
+
+#end
+#end
+## 重写toString方法
+#if(!$enableLombok)
+    @Override
+    public String toString () {
+        return "#foreach ($item in $fieldInfoList)${item.propertyName}=" + ${item.propertyName} + ",#end" +
+        "#foreach ($item in $extendFieldInfoList)${item.propertyName}=" + ${item.propertyName} + ",#end";
+    }
+#end
+}

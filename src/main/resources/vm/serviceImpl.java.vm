@@ -1,0 +1,118 @@
+package ${packageName}.service.impl;
+
+import java.util.List;
+import ${packageName}.entity.po.${className};
+import ${packageName}.entity.query.${className}Query;
+import ${packageName}.entity.vo.PaginationResultVo;
+import ${packageName}.mappers.${className}Mapper;
+import ${packageName}.service.${className}Service;
+import ${packageName}.utils.enums.PageSizeEnum;
+import ${packageName}.entity.query.SimplePage;
+$importSpringBootHashMap.get("Resource")
+import org.springframework.stereotype.Service;
+
+@Service("${className}Service")
+public class ${className}ServiceImpl implements ${className}Service  {
+
+    @Resource
+    ${className}Mapper #classNameMapperVariable()
+
+    /**
+     * 根据条件查询列表
+     */
+    @Override
+    public List<${className}> selectListByParam(${className}Query param){
+        return #classNameMapper().selectList(param);
+    }
+
+    /**
+     * 根据条件查询列表数量
+     */
+    @Override
+    public Integer selectCountByParam(${className}Query param){
+        return #classNameMapper().selectCount(param);
+    }
+
+    /**
+     * 分页查询
+     */
+    @Override
+    public PaginationResultVo<${className}> selectListByPage(${className}Query param){
+        int count = selectCountByParam(param);
+        int pageSize = param.getPageSize() == null ? PageSizeEnum.SIZE15.getSize() : param.getPageSize();
+        SimplePage page = new SimplePage(param.getPageNum(), count, pageSize);
+        param.setSimplePage(page);
+        List<$className> list = selectListByParam(param);
+        return new PaginationResultVo<>(count, page.getPageSize(), page.getPageNum(), page.getPageTotal(), list);
+    }
+
+    /**
+     * 新增
+     */
+    @Override
+    public Integer insert(${className} bean){
+        return #classNameMapper().insert(bean);
+    }
+
+    /**
+     * 批量新增
+     */
+    @Override
+    public Integer insertBatch(List<${className}> listBean){
+        return #classNameMapper().insertBatch(listBean);
+    }
+
+#foreach($keyData in ${keyIndexMap.entrySet()})
+    /**
+     * 根据 #funName($keyData) 查询
+     */
+    @Override
+    public ${className} selectBy#funName($keyData)(#parameterName2($keyData)){
+        return #classNameMapper().selectBy#funName($keyData)(#parameterName3($keyData));
+    }
+
+    /**
+     * 根据 #funName($keyData) 修改
+     */
+    @Override
+    public Integer updateBy#funName($keyData)($className bean,#parameterName2($keyData)){
+        ${className}Query query = new ${className}Query();
+#foreach($item in $keyData.getValue())
+        query.set${StringUtils.convertToCamelCase($item.propertyName)}(${item.propertyName});
+#end
+        return #classNameMapper().updateByParam(bean,query);
+    }
+
+    /**
+     * 根据 #funName($keyData) 删除
+     */
+    @Override
+    public Integer deleteBy#funName($keyData)(#parameterName2($keyData)){
+        return #classNameMapper().deleteBy#funName($keyData)(#parameterName3($keyData));
+    }
+#if($keyData.getValue().get(0).getAutoIncrementFlag())
+    /**
+     * 根据 #funName($keyData) 批量删除
+     */
+    @Override
+    public Integer deleteBy#funName($keyData)Batch(List<Integer> list){
+        return #classNameMapper().deleteBy#funName($keyData)Batch(list);
+    }
+#end
+#end
+## 方法名称 如 IdAndNameAndAge
+#macro(funName $keyData)
+    #foreach($item in $keyData.getValue())$StringUtils.convertToCamelCase($item.propertyName)#if($foreach.index < $keyData.getValue().size() - 1)And#end#end
+#end
+## Mapper名称
+#macro(classNameMapperVariable)$StringUtils.lowerCaseFirstLetter($className)Mapper;#end
+#macro(classNameMapper)$StringUtils.lowerCaseFirstLetter($className)Mapper#end
+## 参数名称 如 int id,String name,int age
+#macro(parameterName2 $keyData)
+    #foreach($item in $keyData.getValue())$item.javaType $item.propertyName#if($foreach.index < $keyData.getValue().size() - 1),#end#end
+#end
+## 参数名称 如 id,name,age
+#macro(parameterName3 $keyData)
+    #foreach($item in $keyData.getValue())$item.propertyName#if($foreach.index < $keyData.getValue().size() - 1),#end#end
+#end
+}

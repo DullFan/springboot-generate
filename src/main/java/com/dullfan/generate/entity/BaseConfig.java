@@ -4,7 +4,7 @@ import com.dullfan.generate.config.DullJavaConfig;
 import lombok.Data;
 
 @Data
-public class ConfigBean {
+public class BaseConfig {
     /**
      * 是否忽略表前缀
      */
@@ -54,12 +54,7 @@ public class ConfigBean {
     private Integer springBootVersion = 3;
 
     /**
-     * 单表名称列表
+     * 生成路径
      */
-    private String databaseName = "";
-
-    /**
-     * SQL语句
-     */
-    private String sqlStatement = "";
+    private String generatePath = "";
 }

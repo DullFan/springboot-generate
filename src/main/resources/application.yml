@@ -2,23 +2,24 @@ spring:
   datasource:
     name: mysql
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/xxx?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&useSSL=false&allowPublicKeyRetrieval=true
-    username: xxxx
-    password: xxxx
+    url: jdbc:mysql://localhost:3306/community?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&useSSL=false&allowPublicKeyRetrieval=true
+    username: root
+    password: Fan292852.
 server:
   port: 9968
 mybatis:
   mapper-locations: classpath:mapper/*.xml
 
 dull:
+  # 是否忽略表前缀
   table-prefix: false
-  bean-query: Query
-#  path-base: /springboot/generate/
-  path-base: D:/AResourceData/testResources/
-  package-base: com.hahaha
+  # 是否启动lombok
+  lombok-enable: false
+  # 输出路径
+  path-base: D:/AResourceData/testResources
+  # 包名
+  package-base: com.example.demo
+  # 作者
   author: DullFan
-  is-field-time-formatted: true
+  # 是否要忽略的字段
   field-ignore: id,status
-  query-fuzzy: Fuzzy
-  query-time-start: Start
-  query-time-end: End

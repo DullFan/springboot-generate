@@ -11,6 +11,15 @@ SpringBoot-Generate是一款代码生成工具，旨在通过根据SQL语句生�
 3. 配置动态数据源,支持动态的添加数据源和切换数据源,不需要重启服务.
 4. 代码生成的时候支持浏览器下载和生成到本地.
 
+## 可选导入依赖
+```xml
+<dependency>
+    <groupId>org.projectlombok</groupId>
+    <artifactId>lombok</artifactId>
+    <scope>provided</scope>
+</dependency>
+```
+
 ## UI
 ![img.png](res/ui.png)
 前端文件在ui中,用Vue3 + Vite + ElementPlus写的
@@ -216,102 +225,102 @@ public class TbBrandController extends ABaseController {
 	 * 根据条件分页查询
 	 */
 	@GetMapping("/loadDataList")
-	public AjaxResult loadDataList(TbBrandQuery param){
-		return getSuccessAjaxResult(tbBrandService.findListByPage(param));
+	public Result loadDataList(TbBrandQuery param){
+		return getSuccessResult(tbBrandService.findListByPage(param));
 	}
 	/**
 	 * 新增
 	 */
 	@PostMapping("/add")
-	public AjaxResult add(@RequestBody TbBrand bean) {
+	public Result add(@RequestBody TbBrand bean) {
 		tbBrandService.add(bean);
-		return getSuccessAjaxResult(null);
+		return getSuccessResult(null);
 	}
 	/**
 	 * 批量新增
 	 */
 	@PostMapping("/addBatch")
-	public AjaxResult addBatch(@RequestBody List<TbBrand> listBean) {
+	public Result addBatch(@RequestBody List<TbBrand> listBean) {
 		tbBrandService.addBatch(listBean);
-		return getSuccessAjaxResult(null);
+		return getSuccessResult(null);
 	}
 	/**
 	 * 根据Id查询对象
 	 */
 	@GetMapping("/getTbBrandById")
-	public AjaxResult getTbBrandById(Integer id) {
-		return getSuccessAjaxResult(tbBrandService.getTbBrandById(id));
+	public Result getTbBrandById(Integer id) {
+		return getSuccessResult(tbBrandService.getTbBrandById(id));
 	}
 	/**
 	 * 根据Id修改对象
 	 */
 	@PutMapping("/updateTbBrandById")
-	public AjaxResult updateTbBrandById(TbBrand bean,Integer id) {
+	public Result updateTbBrandById(TbBrand bean,Integer id) {
 		tbBrandService.updateTbBrandById(bean,id);
-		return getSuccessAjaxResult(null);
+		return getSuccessResult(null);
 	}
 	/**
 	 * 根据Id删除
 	 */
 	@DeleteMapping("/deleteTbBrandById")
-	public AjaxResult deleteTbBrandById(Integer id) {
+	public Result deleteTbBrandById(Integer id) {
 		tbBrandService.deleteTbBrandById(id);
-		return getSuccessAjaxResult(null);
+		return getSuccessResult(null);
 	}
 	/**
 	 * 根据Id批量删除
 	 */
 	@DeleteMapping("/deleteTbBrandByIdBatch")
-	public AjaxResult deleteTbBrandByIdBatch(@RequestParam List<Integer> list) {
+	public Result deleteTbBrandByIdBatch(@RequestParam List<Integer> list) {
 		tbBrandService.deleteTbBrandByIdBatch(list);
-		return getSuccessAjaxResult(null);
+		return getSuccessResult(null);
 	}
 	/**
 	 * 根据BrandName查询对象
 	 */
 	@GetMapping("/getTbBrandByBrandName")
-	public AjaxResult getTbBrandByBrandName(String brandName) {
-		return getSuccessAjaxResult(tbBrandService.getTbBrandByBrandName(brandName));
+	public Result getTbBrandByBrandName(String brandName) {
+		return getSuccessResult(tbBrandService.getTbBrandByBrandName(brandName));
 	}
 	/**
 	 * 根据BrandName修改对象
 	 */
 	@PutMapping("/updateTbBrandByBrandName")
-	public AjaxResult updateTbBrandByBrandName(TbBrand bean,String brandName) {
+	public Result updateTbBrandByBrandName(TbBrand bean,String brandName) {
 		tbBrandService.updateTbBrandByBrandName(bean,brandName);
-		return getSuccessAjaxResult(null);
+		return getSuccessResult(null);
 	}
 	/**
 	 * 根据BrandName删除
 	 */
 	@DeleteMapping("/deleteTbBrandByBrandName")
-	public AjaxResult deleteTbBrandByBrandName(String brandName) {
+	public Result deleteTbBrandByBrandName(String brandName) {
 		tbBrandService.deleteTbBrandByBrandName(brandName);
-		return getSuccessAjaxResult(null);
+		return getSuccessResult(null);
 	}
 	/**
         * 唯一索引
 	 * 根据CompanyNameAndCreateMoney查询对象
 	 */
 	@GetMapping("/getTbBrandByCompanyNameAndCreateMoney")
-	public AjaxResult getTbBrandByCompanyNameAndCreateMoney(String companyName,BigDecimal createMoney) {
-		return getSuccessAjaxResult(tbBrandService.getTbBrandByCompanyNameAndCreateMoney(companyName,createMoney));
+	public Result getTbBrandByCompanyNameAndCreateMoney(String companyName,BigDecimal createMoney) {
+		return getSuccessResult(tbBrandService.getTbBrandByCompanyNameAndCreateMoney(companyName,createMoney));
 	}
 	/**
 	 * 根据CompanyNameAndCreateMoney修改对象
 	 */
 	@PutMapping("/updateTbBrandByCompanyNameAndCreateMoney")
-	public AjaxResult updateTbBrandByCompanyNameAndCreateMoney(TbBrand bean,String companyName,BigDecimal createMoney) {
+	public Result updateTbBrandByCompanyNameAndCreateMoney(TbBrand bean,String companyName,BigDecimal createMoney) {
 		tbBrandService.updateTbBrandByCompanyNameAndCreateMoney(bean,companyName,createMoney);
-		return getSuccessAjaxResult(null);
+		return getSuccessResult(null);
 	}
 	/**
 	 * 根据CompanyNameAndCreateMoney删除
 	 */
 	@DeleteMapping("/deleteTbBrandByCompanyNameAndCreateMoney")
-	public AjaxResult deleteTbBrandByCompanyNameAndCreateMoney(String companyName,BigDecimal createMoney) {
+	public Result deleteTbBrandByCompanyNameAndCreateMoney(String companyName,BigDecimal createMoney) {
 		tbBrandService.deleteTbBrandByCompanyNameAndCreateMoney(companyName,createMoney);
-		return getSuccessAjaxResult(null);
+		return getSuccessResult(null);
 	}
 }
 ```

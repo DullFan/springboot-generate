@@ -1,6 +1,6 @@
 package com.dullfan.generate.utils.extremely;
 
-import com.dullfan.generate.utils.AjaxResult;
+import com.dullfan.generate.utils.Result;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -16,10 +16,10 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(value = ServiceException.class)
     @ResponseBody
-    public AjaxResult bizExceptionHandler(HttpServletRequest req, ServiceException e){
+    public Result bizExceptionHandler(HttpServletRequest req, ServiceException e){
         e.printStackTrace();
         log.error("发生业务异常！原因是：{}",e.getErrorMsg());
-        return AjaxResult.error(e.getErrorCode(),e.getErrorMsg());
+        return Result.error(e.getErrorMsg());
     }
 
     /**
@@ -27,8 +27,8 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(value =Exception.class)
     @ResponseBody
-    public AjaxResult exceptionHandler(HttpServletRequest req, Exception e){
+    public Result exceptionHandler(HttpServletRequest req, Exception e){
         log.error("未知异常！原因是:",e);
-        return AjaxResult.error("未知异常！原因是:"+e.getMessage());
+        return Result.error("未知异常！原因是:"+e.getMessage());
     }
 }

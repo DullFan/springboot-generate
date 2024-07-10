@@ -6,12 +6,11 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
-import com.alibaba.fastjson2.JSONObject;
 import com.dullfan.generate.config.DullJavaConfig;
 import com.dullfan.generate.entity.*;
-import com.dullfan.generate.entity.do_.Table;
-import com.dullfan.generate.entity.do_.TablePrimaryKey;
-import com.dullfan.generate.entity.do_.TableStructure;
+import com.dullfan.generate.entity.po.Table;
+import com.dullfan.generate.entity.po.TablePrimaryKey;
+import com.dullfan.generate.entity.po.TableStructure;
 import com.dullfan.generate.mapper.DatabaseManagementMapper;
 import com.dullfan.generate.service.DatabaseManagementService;
 import com.dullfan.generate.utils.StringUtils;
@@ -38,6 +37,39 @@ public class DatabaseManagementServiceImpl implements DatabaseManagementService 
 
     @Resource
     private DatabaseManagementMapper databaseManagementMapper;
+
+
+    /**
+     * 预览代码
+     *
+     * @param tableId 表编号
+     * @return 预览数据列表
+     */
+    @Override
+    public Map<String, String> previewCode(Long tableId) {
+        return null;
+    }
+
+    /**
+     * 生成代码（下载方式）
+     *
+     * @param tableName 表名称
+     * @return 数据
+     */
+    @Override
+    public byte[] downloadCode(String tableName) {
+        return new byte[0];
+    }
+
+    /**
+     * 生成代码（自定义路径）
+     *
+     * @param tableName 表名称
+     */
+    @Override
+    public void generatorCode(String tableName) {
+
+    }
 
     @Override
     public void switchDatabase(String newIp, String newPort, String newDatabaseName, String username, String password) {
@@ -91,8 +123,6 @@ public class DatabaseManagementServiceImpl implements DatabaseManagementService 
 
     /**
      * 解析SQL
-     * @param sql
-     * @return
      */
     @Override
     public List<TableInfo> selectListSQLTables(String sql) {
@@ -102,8 +132,7 @@ public class DatabaseManagementServiceImpl implements DatabaseManagementService 
         for (SQLStatement sqlStatement : sqlStatements) {
             List<TableStructure> tableStructureList = new ArrayList<>();
             List<TablePrimaryKey> tablePrimaryKeyList = new ArrayList<>();
-            if (sqlStatement instanceof MySqlCreateTableStatement) {
-                MySqlCreateTableStatement createTableStatement = (MySqlCreateTableStatement) sqlStatement;
+            if (sqlStatement instanceof MySqlCreateTableStatement createTableStatement) {
                 String tableName = createTableStatement.getTableName().replaceAll("`", "");
                 String tableComment;
                 if(createTableStatement.getComment() == null){
@@ -181,7 +210,7 @@ public class DatabaseManagementServiceImpl implements DatabaseManagementService 
     }
 
     @Override
-    public void updateConfig(ConfigBean configBean) {
+    public void updateConfig(BaseConfig configBean) {
         if(StringUtils.isEmpty(configBean.getAuthor())){
             configBean.setAuthor(DullJavaConfig.getAuthor());
         }
@@ -234,7 +263,10 @@ public class DatabaseManagementServiceImpl implements DatabaseManagementService 
                 if (ArrayUtils.contains(Constants.SQL_DATE_TIME_TYPES, type)) hasDateTime = true;
                 if (ArrayUtils.contains(Constants.SQL_DATE_TYPES, type)) hasDate = true;
                 if (ArrayUtils.contains(Constants.SQL_DECIMAL_TYPE, type)) hasBigDecimal = true;
-                if (DullJavaConfig.getFieldIgnoreHashSet().contains(fieldInfo.getFieldName())) haveJsonIgnore = true;
+                if (DullJavaConfig.getFieldIgnoreHashSet().contains(fieldInfo.getFieldName())) {
+                    haveJsonIgnore = true;
+                    fieldInfo.setHaveJsonIgnore(true);
+                }
                 fieldInfoList.add(fieldInfo);
             }
             tableInfo.setHaveBigDecimal(hasBigDecimal);
@@ -244,10 +276,11 @@ public class DatabaseManagementServiceImpl implements DatabaseManagementService 
             List<FieldInfo> extendList = new ArrayList<>();
             for (FieldInfo fieldInfo : fieldInfoList) {
                 //String类型参数,
-                if (ArrayUtils.contains(Constants.SQL_STRING_TYPE, fieldInfo.getSqlType())) {
+                // TODO 不确定使用String还是byte[]
+                if (ArrayUtils.contains(Constants.SQL_STRING_TYPE, fieldInfo.getSqlType()) || ArrayUtils.contains(Constants.SQL_BYTE_TYPES, fieldInfo.getSqlType())) {
                     FieldInfo field = new FieldInfo();
                     field.setJavaType(fieldInfo.getJavaType());
-                    field.setPropertyName(fieldInfo.getPropertyName() + DullJavaConfig.getQueryFuzzy());
+                    field.setPropertyName(fieldInfo.getPropertyName() + "fuzzy");
                     field.setFieldName(fieldInfo.getFieldName());
                     field.setSqlType(fieldInfo.getSqlType());
                     extendList.add(field);
@@ -255,14 +288,14 @@ public class DatabaseManagementServiceImpl implements DatabaseManagementService 
                 //日期
                 if (ArrayUtils.contains(Constants.SQL_DATE_TIME_TYPES, fieldInfo.getSqlType()) || ArrayUtils.contains(Constants.SQL_DATE_TYPES, fieldInfo.getSqlType())) {
                     FieldInfo field = new FieldInfo();
-                    field.setJavaType("String");
-                    field.setPropertyName(fieldInfo.getPropertyName() + DullJavaConfig.getQueryTimeStart());
+                    field.setJavaType("Date");
+                    field.setPropertyName(fieldInfo.getPropertyName() + "Start");
                     field.setFieldName(fieldInfo.getFieldName());
                     field.setSqlType(fieldInfo.getSqlType());
                     extendList.add(field);
                     field = new FieldInfo();
-                    field.setJavaType("String");
-                    field.setPropertyName(fieldInfo.getPropertyName() + DullJavaConfig.getQueryTimeEnd());
+                    field.setJavaType("Date");
+                    field.setPropertyName(fieldInfo.getPropertyName() + "End");
                     field.setFieldName(fieldInfo.getFieldName());
                     field.setSqlType(fieldInfo.getSqlType());
                     extendList.add(field);

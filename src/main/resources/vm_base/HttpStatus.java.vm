@@ -1,3 +1,4 @@
+package ${packageName}.utils.constant;
 
 /**
  * 返回状态码

@@ -1,8 +1,8 @@
 package com.dullfan.generate.mapper;
 
-import com.dullfan.generate.entity.do_.Table;
-import com.dullfan.generate.entity.do_.TablePrimaryKey;
-import com.dullfan.generate.entity.do_.TableStructure;
+import com.dullfan.generate.entity.po.Table;
+import com.dullfan.generate.entity.po.TablePrimaryKey;
+import com.dullfan.generate.entity.po.TableStructure;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;

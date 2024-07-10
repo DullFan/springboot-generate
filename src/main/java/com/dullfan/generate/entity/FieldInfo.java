@@ -30,4 +30,8 @@ public class FieldInfo {
      */
     private Boolean autoIncrementFlag;
 
+    /**
+     *  字段是否忽略
+     */
+    private Boolean haveJsonIgnore;
 }

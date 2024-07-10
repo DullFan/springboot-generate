@@ -1,4 +1,6 @@
-public class BaseParam {
+package ${packageName}.entity.query;
+
+public class ABaseParam {
 	private SimplePage simplePage;
 	private Integer pageNum;
 	private Integer pageSize;

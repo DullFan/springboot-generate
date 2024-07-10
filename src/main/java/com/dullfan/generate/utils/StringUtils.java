@@ -602,7 +602,20 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
         if (ArrayUtils.contains(Constants.SQL_DECIMAL_TYPE, type)) return "BigDecimal";
         if (ArrayUtils.contains(Constants.SQL_FLOAT_TYPE, type)) return "Float";
         if (ArrayUtils.contains(Constants.SQL_DOUBLE_TYPE, type)) return "Double";
-        if (ArrayUtils.contains(Constants.SQL_BYTE_TYPES, type)) return "byte[]";
+        // TODO 不确定使用String还是byte[]
+        if (ArrayUtils.contains(Constants.SQL_BYTE_TYPES, type)) return "String";
         throw new ServiceException("无法识别的类型:" + type);
+    }
+
+    /**
+     * 判断字符串是否以 "Start" 结尾
+     * @param input 待检查的字符串
+     * @return 如果字符串以 "Start" 结尾，则返回 true，否则返回 false
+     */
+    public static boolean endsWithStart(String input) {
+        if (input == null || input.isEmpty()) {
+            return false;
+        }
+        return input.endsWith("Start");
     }
 }
