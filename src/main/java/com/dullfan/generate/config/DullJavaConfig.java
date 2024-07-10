@@ -112,8 +112,16 @@ public class DullJavaConfig {
         DullJavaConfig.tablePrefix = tablePrefix;
     }
 
+    public static void setStaticEnabledLombok(Boolean enabledLombok) {
+        DullJavaConfig.enabledLombok = enabledLombok;
+    }
+
     public static void setStaticAuthor(String author) {
         DullJavaConfig.author = author;
+    }
+
+    public static void setStaticPathBase(String pathBase) {
+        DullJavaConfig.pathBase = pathBase;
     }
 
     public static void setStaticFieldIgnore(String fieldIgnore) {

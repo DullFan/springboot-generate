@@ -5,11 +5,12 @@ SpringBoot-Generate是一款代码生成工具，旨在通过根据SQL语句生�
 并提供用户友好的界面，便于与现有项目无缝集成。
 
 ## 功能
-
-1. 底层框架使用的是SpringBoot.
-2. ORM框架选择的是MyBatis + 通用Mapper.
-3. 配置动态数据源,支持动态的添加数据源和切换数据源,不需要重启服务.
-4. 代码生成的时候支持浏览器下载和生成到本地.
+- [x] 使用Velocity模板替换手动字符串拼接方式
+- [x] 配置动态数据源,支持动态的添加数据源和切换数据源,不需要重启服务
+- [x] 生成代码支持浏览器下载以及生成到对应路径
+- [x] 根据主键生成查询、修改、删除
+- [ ] 联表查询
+- [ ] 树形数据
 
 ## 可选导入依赖
 ```xml
@@ -27,116 +28,117 @@ SpringBoot-Generate是一款代码生成工具，旨在通过根据SQL语句生�
 ## API
 
 ### 生成数据库中所有表代码
-* POST /api/findAllSQLResource
+* POST /api/generateCodeAll
 * 请求数据类型: application/json
 * 请求参数
 
-| 参数名称          | 参数说明           | 参数类型 |
-|------------------|-------------------|---------|
-| tablePrefix      | 是否使用表前缀      | boolean |
-| packageBase      | 基础包名           | String  |
-| fieldIgnoreList  | 要忽略的字段列表    | String  |
-| author           | 作者               | String  |
-| sqlIp            | 数据库IP地址        | String  |
+| 参数名称          | 参数说明          | 参数类型 |
+|------------------|---------------|---------|
+| tablePrefix      | 是否使用表前缀       | boolean |
+| enabledLombok    | 是否使用Lombok    | boolean |
+| packageBase      | 基础包名          | String  |
+| fieldIgnoreList  | 要忽略的字段列表      | String  |
+| author           | 作者            | String  |
+| sqlIp            | 数据库IP地址       | String  |
 | ipPort           | 数据库端口号        | String  |
-| sqlName          | 数据库名称          | String  |
+| sqlName          | 数据库名称         | String  |
 | sqlUsername      | 数据库用户名        | String  |
-| sqlPassword      | 数据库密码          | String  |
-| springBootVersion| Spring Boot版本    | String  |
+| sqlPassword      | 数据库密码         | String  |
+| springBootVersion| Spring Boot版本 | String  |
 * 请求示例
 ```json
 {
-    "tablePrefix":"true",
-    "packageBase":"com.dullfan.hahaha",
-    "fieldIgnoreList":"id,status",
-    "author":"DullFan",
-    "sqlIp":"localhost",
-    "ipPort":"3306",
-    "sqlName":"my_batis",
-    "sqlUsername":"root",
-    "sqlPassword":"Fan292852.",
-    "springBootVersion":"3"
+  "tablePrefix":"true",
+  "enabledLombok":"true",
+  "packageBase":"com.hahaha",
+  "fieldIgnoreList":"id,status",
+  "author":"DullFan",
+  "sqlIp":"127.0.0.1",
+  "ipPort":"3306",
+  "sqlName":"community",
+  "sqlUsername":"root",
+  "sqlPassword":"Fan292852.",
+  "springBootVersion":"3"
 }
 ```
 
 ### 生成对应表代码
-* POST /api/findSQLResource
+* POST /api/generateCodeByTableName
 * 请求数据类型: application/json
-* 请求参数
+* 请求参数(其他参数如上)
 
 | 参数名称          | 参数说明         | 参数类型    |
 |------------------|--------------|---------|
-| tablePrefix      | 是否使用表前缀      | boolean |
-| packageBase      | 基础包名         | String  |
-| fieldIgnoreList  | 要忽略的字段列表     | String  |
-| author           | 作者           | String  |
-| sqlIp            | 数据库IP地址      | String  |
-| ipPort           | 数据库端口号       | String  |
-| sqlName          | 数据库名称        | String  |
-| sqlUsername      | 数据库用户名       | String  |
-| sqlPassword      | 数据库密码        | String  |
-| springBootVersion| Spring Boot版本 | String  |
 | databaseName     | 数据库名（逗号分割）| String  |
 * 请求示例
 ```json
 {
-    "tablePrefix":"true",
-    "packageBase":"com.dullfan.hahaha",
-    "fieldIgnoreList":"id,status",
-    "author":"DullFan",
-    "sqlIp":"localhost",
-    "ipPort":"3306",
-    "sqlName":"my_batis",
-    "sqlUsername":"root",
-    "sqlPassword":"Fan292852.",
-    "springBootVersion":"3",
-    "databaseName":"tb_order,tb_brand"
+  "tablePrefix":"true",
+  "enabledLombok":"true",
+  "packageBase":"com.dullfan.hahaha",
+  "fieldIgnoreList":"id,status",
+  "author":"DullFan",
+  "sqlIp":"localhost",
+  "ipPort":"3306",
+  "sqlName":"community",
+  "sqlUsername":"root",
+  "sqlPassword":"Fan292852.",
+  "springBootVersion":"3",
+  "databaseName":"articles,articles_tag"
 }
 ```
 
 ### 根据SQL生成代码
-* POST /api/findAllSQLResource
+* POST /api/generateCodeBySQL
 * 请求数据类型: application/json
-* 请求参数
+* 请求参数(其他参数如上)
 
 | 参数名称          | 参数说明           | 参数类型 |
 |------------------|-------------------|---------|
-| tablePrefix      | 是否使用表前缀      | boolean |
-| packageBase      | 基础包名           | String  |
-| fieldIgnoreList  | 要忽略的字段列表    | String  |
-| author           | 作者               | String  |
-| springBootVersion| Spring Boot版本    | String  |
 | sqlStatement     | SQL语句（分号分割）            | String  |
 * 请求示例
 ```json
 {
-    "tablePrefix": "true",
-    "packageBase": "com.dullfan.hahaha",
-    "fieldIgnoreList": "id,status",
-    "author": "DullFan",
-    "springBootVersion": "3",
-    "sqlStatement": "CREATE TABLE `articles` ( `id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '主键', `content` longblob COMMENT '内容', `author_id` int unsigned DEFAULT '0' COMMENT '作者ID', `publish_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '发布时间', `is_top` tinyint unsigned DEFAULT '0' COMMENT '是否置顶，0：不置顶，1：置顶', `reviewer_id` int unsigned DEFAULT '0' COMMENT '审核人员ID', `reviewer_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '审核时间', `status` int unsigned DEFAULT '1' COMMENT '状态，0是正常状态，1是审核状态，2是封禁状态', `tag_id` int unsigned DEFAULT '1' COMMENT '文章标签', `browse_count` int unsigned DEFAULT '0' COMMENT '浏览量', `comment_count` int unsigned DEFAULT '0' COMMENT '评论数', `thumbs_up_count` int unsigned DEFAULT '0' COMMENT '点赞数', PRIMARY KEY (`id`)) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb3 COMMENT='文章表'; CREATE TABLE `comment` ( `id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '主键', `content` varchar(200) DEFAULT NULL COMMENT '内容', `comment_user_id` int unsigned DEFAULT '0' COMMENT '评论者ID', `comment_articles_id` int unsigned DEFAULT '0' COMMENT '评论所属文章ID', `reply_count` int unsigned DEFAULT '0' COMMENT '回复量', `comment_thumbs_up_count` int unsigned DEFAULT '0' COMMENT '点赞量', `comment_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '评论时间', PRIMARY KEY (`id`)) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb3 COMMENT='文章评论表';"
+  "sqlStatement": "CREATE TABLE `articles_tag` (\n  `id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',\n  `name` varchar(30) DEFAULT NULL COMMENT '标签名称',\n  `description` varchar(100) DEFAULT NULL COMMENT '标签描述',\n  `status` int unsigned DEFAULT '1' COMMENT '状态，1是可用，2是不可用',\n  `create_by` int unsigned DEFAULT '0' COMMENT '创建者ID',\n  `create_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',\n  PRIMARY KEY (`id`)\n) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb3 COMMENT='文章标签表';\n\nCREATE TABLE `articles` (\n  `id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',\n  `content` longblob COMMENT '内容',\n  `author_id` int unsigned DEFAULT '0' COMMENT '作者ID',\n  `publish_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '发布时间',\n  `is_top` tinyint unsigned DEFAULT '0' COMMENT '是否置顶，0：不置顶，1：置顶',\n  `reviewer_id` int unsigned DEFAULT '0' COMMENT '审核人员ID',\n  `reviewer_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '审核时间',\n  `status` int unsigned DEFAULT '1' COMMENT '状态，0是正常状态，1是审核状态，2是封禁状态',\n  `tag_id` int unsigned DEFAULT '1' COMMENT '文章标签',\n  `browse_count` int unsigned DEFAULT '0' COMMENT '浏览量',\n  `comment_count` int unsigned DEFAULT '0' COMMENT '评论数',\n  `thumbs_up_count` int unsigned DEFAULT '0' COMMENT '点赞数',\n  PRIMARY KEY (`id`)\n) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8mb3 COMMENT='文章表';",
+  "packageBase": "com.hahaha",
+  "author": "DullFan",
+  "springBootVersion": 3,
+  "tablePrefix": true,
+  "enabledLombok":"true"
 }
+```
 
+### 将代码生成到指定路径中(需本地使用)
+* POST /api/exportLocalCode
+* 请求数据类型: application/json
+* 请求参数(其他参数如上)
+
+| 参数名称          | 参数说明 | 参数类型 |
+|------------------|------|---------|
+| exportLocal     | 输出路径 | String  |
+* 请求示例
+```json
+{
+  "packageBase": "com.hahaha",
+  "author": "DullFan",
+  "springBootVersion": 3,
+  "tablePrefix": false,
+  "enabledLombok":"true",
+  "exportLocal":"D:/AResourceData/testResources/aaaa"
+}
+```
+* 返回结果
+```json
+{
+  "msg": "操作成功",
+  "code": 200
+}
 ```
 
 ### 获取当前数据库中所有表（连接数据库后可用）
 * POST /api/findAllSQLStructure
 * 请求数据类型: application/json
-* 请求参数
-
-| 参数名称          | 参数说明           | 参数类型 |
-|------------------|-------------------|---------|
-| tablePrefix      | 是否使用表前缀      | boolean |
-| packageBase      | 基础包名           | String  |
-| fieldIgnoreList  | 要忽略的字段列表    | String  |
-| author           | 作者               | String  |
-| sqlIp            | 数据库IP地址        | String  |
-| ipPort           | 数据库端口号        | String  |
-| sqlName          | 数据库名称          | String  |
-| sqlUsername      | 数据库用户名        | String  |
-| sqlPassword      | 数据库密码          | String  |
-| springBootVersion| Spring Boot版本    | String  |
+* 请求参数(其他参数如上)
 * 请求示例
 ```json
 {
@@ -189,192 +191,188 @@ SpringBoot-Generate是一款代码生成工具，旨在通过根据SQL语句生�
 ```
 
 
-## 生成文件介绍
-![img.png](res/img1.png)
-如果要保存文件就将这里的代码注释
-![img.png](res/img2.png)
-修改上方自定义保存路径
+## 关键文件介绍
 
 测试SQL
 ```mysql
-CREATE TABLE `tb_brand` (
-  `id` int NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `brand_name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '品牌名称',
-  `company_name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '公司名称',
-  `ordered` int DEFAULT NULL COMMENT '价格',
-  `description` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '描述',
-  `status` int DEFAULT NULL COMMENT '状态',
-  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
-  `update_time` date DEFAULT NULL COMMENT '更新时间',
-  `create_money` float DEFAULT NULL COMMENT '公司注册金额',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `idx_unique` (`brand_name`) USING BTREE,
-  UNIQUE KEY `idx_create_money_and_company_name` (`company_name`,`create_money`) USING BTREE,
-  KEY `idx_test` (`status`) USING BTREE,
-  FULLTEXT KEY `idx_test2` (`description`)
-) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='品牌表';
+CREATE TABLE `articles` (
+     `id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
+     `content` longblob COMMENT '内容',
+     `author_id` int unsigned DEFAULT '0' COMMENT '作者ID',
+     `publish_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '发布时间',
+     `is_top` tinyint unsigned DEFAULT '0' COMMENT '是否置顶，0：不置顶，1：置顶',
+     `reviewer_id` int unsigned DEFAULT '0' COMMENT '审核人员ID',
+     `reviewer_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '审核时间',
+     `status` int unsigned DEFAULT '1' COMMENT '状态，0是正常状态，1是审核状态，2是封禁状态',
+     `tag_id` int unsigned DEFAULT '1' COMMENT '文章标签',
+     `browse_count` int unsigned DEFAULT '0' COMMENT '浏览量',
+     `comment_count` int unsigned DEFAULT '0' COMMENT '评论数',
+     `thumbs_up_count` int unsigned DEFAULT '0' COMMENT '点赞数',
+     PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8mb3 COMMENT='文章表';
 ```
 根据工具生成的Controller代码
 ```java
-@RestController("TbBrandController")
-@RequestMapping("/tbBrand")
-public class TbBrandController extends ABaseController {
-	@Resource
-	private TbBrandService tbBrandService;
-	/**
-	 * 根据条件分页查询
-	 */
-	@GetMapping("/loadDataList")
-	public Result loadDataList(TbBrandQuery param){
-		return getSuccessResult(tbBrandService.findListByPage(param));
-	}
-	/**
-	 * 新增
-	 */
-	@PostMapping("/add")
-	public Result add(@RequestBody TbBrand bean) {
-		tbBrandService.add(bean);
-		return getSuccessResult(null);
-	}
-	/**
-	 * 批量新增
-	 */
-	@PostMapping("/addBatch")
-	public Result addBatch(@RequestBody List<TbBrand> listBean) {
-		tbBrandService.addBatch(listBean);
-		return getSuccessResult(null);
-	}
-	/**
-	 * 根据Id查询对象
-	 */
-	@GetMapping("/getTbBrandById")
-	public Result getTbBrandById(Integer id) {
-		return getSuccessResult(tbBrandService.getTbBrandById(id));
-	}
-	/**
-	 * 根据Id修改对象
-	 */
-	@PutMapping("/updateTbBrandById")
-	public Result updateTbBrandById(TbBrand bean,Integer id) {
-		tbBrandService.updateTbBrandById(bean,id);
-		return getSuccessResult(null);
-	}
-	/**
-	 * 根据Id删除
-	 */
-	@DeleteMapping("/deleteTbBrandById")
-	public Result deleteTbBrandById(Integer id) {
-		tbBrandService.deleteTbBrandById(id);
-		return getSuccessResult(null);
-	}
-	/**
-	 * 根据Id批量删除
-	 */
-	@DeleteMapping("/deleteTbBrandByIdBatch")
-	public Result deleteTbBrandByIdBatch(@RequestParam List<Integer> list) {
-		tbBrandService.deleteTbBrandByIdBatch(list);
-		return getSuccessResult(null);
-	}
-	/**
-	 * 根据BrandName查询对象
-	 */
-	@GetMapping("/getTbBrandByBrandName")
-	public Result getTbBrandByBrandName(String brandName) {
-		return getSuccessResult(tbBrandService.getTbBrandByBrandName(brandName));
-	}
-	/**
-	 * 根据BrandName修改对象
-	 */
-	@PutMapping("/updateTbBrandByBrandName")
-	public Result updateTbBrandByBrandName(TbBrand bean,String brandName) {
-		tbBrandService.updateTbBrandByBrandName(bean,brandName);
-		return getSuccessResult(null);
-	}
-	/**
-	 * 根据BrandName删除
-	 */
-	@DeleteMapping("/deleteTbBrandByBrandName")
-	public Result deleteTbBrandByBrandName(String brandName) {
-		tbBrandService.deleteTbBrandByBrandName(brandName);
-		return getSuccessResult(null);
-	}
-	/**
-        * 唯一索引
-	 * 根据CompanyNameAndCreateMoney查询对象
-	 */
-	@GetMapping("/getTbBrandByCompanyNameAndCreateMoney")
-	public Result getTbBrandByCompanyNameAndCreateMoney(String companyName,BigDecimal createMoney) {
-		return getSuccessResult(tbBrandService.getTbBrandByCompanyNameAndCreateMoney(companyName,createMoney));
-	}
-	/**
-	 * 根据CompanyNameAndCreateMoney修改对象
-	 */
-	@PutMapping("/updateTbBrandByCompanyNameAndCreateMoney")
-	public Result updateTbBrandByCompanyNameAndCreateMoney(TbBrand bean,String companyName,BigDecimal createMoney) {
-		tbBrandService.updateTbBrandByCompanyNameAndCreateMoney(bean,companyName,createMoney);
-		return getSuccessResult(null);
-	}
-	/**
-	 * 根据CompanyNameAndCreateMoney删除
-	 */
-	@DeleteMapping("/deleteTbBrandByCompanyNameAndCreateMoney")
-	public Result deleteTbBrandByCompanyNameAndCreateMoney(String companyName,BigDecimal createMoney) {
-		tbBrandService.deleteTbBrandByCompanyNameAndCreateMoney(companyName,createMoney);
-		return getSuccessResult(null);
-	}
+@RestController("ArticlesController")
+@RequestMapping("/articles")
+public class ArticlesController extends ABaseController  {
+
+    @Resource
+    ArticlesService articlesService;
+
+    /**
+     * 分页查询
+     */
+    @GetMapping("/loadDataList")
+    public Result selectListByPage(ArticlesQuery param){
+        return success(articlesService.selectListByPage(param));
+    }
+
+    /**
+     * 新增
+     */
+    @PostMapping("/insert")
+    public Result insert(@RequestBody Articles bean){
+        Integer result = articlesService.insert(bean);
+        return determineOperationOutcome(result);
+    }
+
+    /**
+     * 批量新增
+     */
+    @PostMapping("/insertBatch")
+    public Result insertBatch(@RequestBody List<Articles> listBean){
+        Integer result = articlesService.insertBatch(listBean);
+        return determineOperationOutcome(result);
+    }
+
+    /**
+     * 根据 Id 查询
+     */
+    @GetMapping("/selectById")
+    public Result selectById(@RequestParam Long id){
+        return success(articlesService.selectById(id));
+    }
+
+    /**
+     * 根据 Id 修改
+     */
+    @PutMapping("/updateById")
+    public Result updateById(@RequestBody Articles bean,@RequestParam Long id){
+        Integer result = articlesService.updateById(bean,id);
+        return determineOperationOutcome(result);
+    }
+
+
+    /**
+     * 根据 Id 删除
+     */
+    @DeleteMapping("/deleteById")
+    public Result deleteById(@RequestParam Long id){
+        Integer result = articlesService.deleteById(id);
+        return determineOperationOutcome(result);
+    }
+    /**
+     * 根据 Id 批量删除
+     */
+    @DeleteMapping("/deleteByIdBatch")
+    public Result deleteByIdBatch(@RequestParam List<Integer> list){
+        Integer result = articlesService.deleteByIdBatch(list);
+        return determineOperationOutcome(result);
+    }
 }
 ```
 BrandQuery
 ```java
-public class BrandQuery extends BaseParam {
-	/**
-	 * 主键
-	 */
-	private Integer id;
-	/**
-	 * 品牌名称
-	 */
-	private String brandName;
-        /**
-         * 有Fuzzy的就是模糊搜索
-         */ 
-	private String brandNameFuzzy;
-	/**
-	 * 公司名称
-	 */
-	private String companyName;
-	private String companyNameFuzzy;
-	/**
-	 * 价格
-	 */
-	private Integer ordered;
-	/**
-	 * 描述
-	 */
-	private String description;
-	private String descriptionFuzzy;
-	/**
-	 * 状态
-	 */
-	private Integer status;
-	/**
-	 * 创建时间
-	 */
-	private String createTime;
-        /**
-         * 创建时间开始时间
-         */
-	private String createTimeStart;
-        /**
-         * 创建时间结束时间
-         */
-	private String createTimeEnd;
-	/**
-	 * 更新时间
-	 */
-	private String updateTime;
-	private String updateTimeStart;
-	private String updateTimeEnd;
+/**
+ * @author DullFan
+ * @date 2024-07-10 21:02:25
+ */
+public class ArticlesQuery extends ABaseParam {
+
+
+    /**
+     * 主键
+     */
+    private Long id;
+
+    /**
+     * 内容
+     */
+    private String content;
+
+    /**
+     * 作者ID
+     */
+    private Integer authorId;
+
+    /**
+     * 发布时间
+     */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date publishTime;
+
+    /**
+     * 是否置顶，0：不置顶，1：置顶
+     */
+    private Integer isTop;
+
+    /**
+     * 审核人员ID
+     */
+    private Integer reviewerId;
+
+    /**
+     * 审核时间
+     */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date reviewerTime;
+
+    /**
+     * 状态，0是正常状态，1是审核状态，2是封禁状态
+     */
+    private Integer status;
+
+    /**
+     * 文章标签
+     */
+    private Integer tagId;
+
+    /**
+     * 浏览量
+     */
+    private Integer browseCount;
+
+    /**
+     * 评论数
+     */
+    private Integer commentCount;
+
+    /**
+     * 点赞数
+     */
+    private Integer thumbsUpCount;
+
+
+    private String contentfuzzy;
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date publishTimeStart;
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date publishTimeEnd;
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date reviewerTimeStart;
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date reviewerTimeEnd;
 }
 ```
 ## 联系我

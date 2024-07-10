@@ -211,9 +211,7 @@ public class DatabaseManagementServiceImpl implements DatabaseManagementService 
 
     @Override
     public void updateConfig(BaseConfig configBean) {
-        if(StringUtils.isEmpty(configBean.getAuthor())){
-            configBean.setAuthor(DullJavaConfig.getAuthor());
-        }
+
         switchDatabase(configBean.getSqlIp(), configBean.getIpPort(), configBean.getSqlName(), configBean.getSqlUsername(), configBean.getSqlPassword());
         if (configBean.getSpringBootVersion() == null) configBean.setSpringBootVersion(3);
         if (configBean.getSpringBootVersion() == 2) {
@@ -227,7 +225,12 @@ public class DatabaseManagementServiceImpl implements DatabaseManagementService 
         DullJavaConfig.setStaticFieldIgnore(configBean.getFieldIgnoreList());
         DullJavaConfig.setStaticPackageBase(configBean.getPackageBase());
         DullJavaConfig.setStaticTablePrefix(configBean.isTablePrefix());
-        DullJavaConfig.setStaticAuthor(configBean.getAuthor());
+        DullJavaConfig.setStaticEnabledLombok(configBean.isEnabledLombok());
+        if(StringUtils.isEmpty(configBean.getAuthor())){
+            configBean.setAuthor(DullJavaConfig.getAuthor());
+        } else {
+            DullJavaConfig.setStaticAuthor(configBean.getAuthor());
+        }
     }
 
     @Override

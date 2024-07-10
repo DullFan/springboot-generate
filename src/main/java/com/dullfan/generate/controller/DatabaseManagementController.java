@@ -1,11 +1,7 @@
 package com.dullfan.generate.controller;
 
-
 import com.dullfan.generate.config.DullJavaConfig;
-import com.dullfan.generate.entity.BaseConfig;
-import com.dullfan.generate.entity.SQLStatementConfig;
-import com.dullfan.generate.entity.SingleTableConfig;
-import com.dullfan.generate.entity.TableInfo;
+import com.dullfan.generate.entity.*;
 import com.dullfan.generate.service.DatabaseManagementService;
 import com.dullfan.generate.utils.*;
 import com.dullfan.generate.utils.extremely.ServiceException;
@@ -35,8 +31,9 @@ public class DatabaseManagementController {
      * 将代码生成到指定路径中
      */
     @PostMapping("/exportLocalCode")
-    public void exportLocalCode(@RequestBody BaseConfig config) throws IOException {
+    public Result exportLocalCode(@RequestBody ExportLocalConfig config) throws IOException {
         service.updateConfig(config);
+        DullJavaConfig.setStaticPathBase(config.getExportLocal());
         List<TableInfo> listTables = service.selectListTables(true);
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         ZipOutputStream zip = new ZipOutputStream(outputStream);
@@ -44,6 +41,7 @@ public class DatabaseManagementController {
         IOUtils.closeQuietly(zip);
         byte[] byteArray = outputStream.toByteArray();
         FileUtils.unzip(byteArray,DullJavaConfig.getPathBase());
+        return Result.success();
     }
 
     /**

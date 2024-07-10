@@ -10,6 +10,10 @@ public class BaseConfig {
      */
     private boolean tablePrefix = false;
     /**
+     * 是否使用Lombok插件
+     */
+    private boolean enabledLombok = false;
+    /**
      * 包路径
      */
     private String packageBase = DullJavaConfig.getPackageBase();
