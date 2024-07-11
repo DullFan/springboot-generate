@@ -5,7 +5,9 @@ import com.dullfan.generate.entity.*;
 import com.dullfan.generate.service.DatabaseManagementService;
 import com.dullfan.generate.utils.*;
 import com.dullfan.generate.utils.extremely.ServiceException;
+import jakarta.annotation.PostConstruct;
 import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.apache.commons.io.IOUtils;
 import org.apache.velocity.Template;
@@ -14,8 +16,12 @@ import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.io.*;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -32,6 +38,10 @@ public class DatabaseManagementController {
      */
     @PostMapping("/exportLocalCode")
     public Result exportLocalCode(@RequestBody ExportLocalConfig config) throws IOException {
+        // TODO 本地运行删除判断
+        if(true){
+            return Result.error("请在本地运行");
+        }
         service.updateConfig(config);
         DullJavaConfig.setStaticPathBase(config.getExportLocal());
         List<TableInfo> listTables = service.selectListTables(true);

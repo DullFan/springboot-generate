@@ -5,15 +5,13 @@
       <el-header class="text-left el-header-custom w-full">
         <div class="toolbar flex items-center w-full">
           <el-text>SpringBoot-Generate</el-text>
-
-
-          <svg @click="goToGithub" class="max-w-7 max-h-7 ms-auto svg-icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" width="64" height="64">
-            <path d="M511.6 76.3C264.3 76.2 64 276.4 64 523.5 64 718.9 189.3 885 363.8 946c23.5 5.9 19.9-10.8 19.9-22.2v-77.5c-135.7 15.9-141.2-73.9-150.3-88.9C215 726 171.5 718 184.5 703c30.9-15.9 62.4 4 98.9 57.9 26.4 39.1 77.9 32.5 104 26 5.7-23.5 17.9-44.5 34.7-60.8-140.6-25.2-199.2-111-199.2-213 0-49.5 16.3-95 48.3-131.7-20.4-60.5 1.9-112.3 4.9-120 58.1-5.2 118.5 41.6 123.2 45.3 33-8.9 70.7-13.6 112.9-13.6 42.4 0 80.2 4.9 113.5 13.9 11.3-8.6 67.3-48.8 121.3-43.9 2.9 7.7 24.7 58.3 5.5 118 32.4 36.8 48.9 82.7 48.9 132.3 0 102.2-59 188.1-200 212.9 23.5 23.2 38.1 55.4 38.1 91v112.5c0.8 9 0 17.9 15 17.9 177.1-59.7 304.6-227 304.6-424.1 0-247.2-200.4-447.3-447.5-447.3z" fill="#737478"></path>
+          <svg @click="goToGithub" class="max-w-7 max-h-7 ms-auto svg-icon" viewBox="0 0 1024 1024" version="1.1"
+               xmlns="http://www.w3.org/2000/svg" width="64" height="64">
+            <path
+                d="M511.6 76.3C264.3 76.2 64 276.4 64 523.5 64 718.9 189.3 885 363.8 946c23.5 5.9 19.9-10.8 19.9-22.2v-77.5c-135.7 15.9-141.2-73.9-150.3-88.9C215 726 171.5 718 184.5 703c30.9-15.9 62.4 4 98.9 57.9 26.4 39.1 77.9 32.5 104 26 5.7-23.5 17.9-44.5 34.7-60.8-140.6-25.2-199.2-111-199.2-213 0-49.5 16.3-95 48.3-131.7-20.4-60.5 1.9-112.3 4.9-120 58.1-5.2 118.5 41.6 123.2 45.3 33-8.9 70.7-13.6 112.9-13.6 42.4 0 80.2 4.9 113.5 13.9 11.3-8.6 67.3-48.8 121.3-43.9 2.9 7.7 24.7 58.3 5.5 118 32.4 36.8 48.9 82.7 48.9 132.3 0 102.2-59 188.1-200 212.9 23.5 23.2 38.1 55.4 38.1 91v112.5c0.8 9 0 17.9 15 17.9 177.1-59.7 304.6-227 304.6-424.1 0-247.2-200.4-447.3-447.5-447.3z"
+                fill="#737478"></path>
           </svg>
         </div>
-
-
-
       </el-header>
 
       <el-main>
@@ -57,6 +55,27 @@
                 />
               </el-select>
             </el-form-item>
+
+            <el-form-item label="是否忽略大小写" prop="tablePrefix">
+              <el-select v-model="formLabelAlign.tablePrefix" placeholder="Select" style="width: 80px">
+                <el-option
+                    v-for="item in tablePrefixOptions"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                />
+              </el-select>
+            </el-form-item>
+            <el-form-item label="是否配置Lombok" prop="enabledLombok">
+              <el-select v-model="formLabelAlign.enabledLombok" placeholder="Select" style="width: 80px">
+                <el-option
+                    v-for="item in enabledLombokOptions"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                />
+              </el-select>
+            </el-form-item>
           </el-form>
         </div>
 
@@ -73,6 +92,13 @@
               plain
               :icon="Plus"
               @click="sqlCreateClick">SQL生成
+          </el-button>
+
+          <el-button
+              type="warning"
+              plain
+              :icon="FolderOpened"
+              @click="exportCodeClick">导出代码
           </el-button>
 
           <el-button
@@ -188,6 +214,29 @@
       </div>
     </template>
   </el-dialog>
+
+  <el-dialog v-model="dialogExportCodeClickVisible" title="导出代码"
+             width="500">
+
+    <el-form-item prop="sqlPassword">
+      <el-input
+          :rows="10"
+          type="textarea"
+          v-model="formLabelAlign.exportLocal"
+          placeholder="路径(需要先完成配置数据库并且还要在本地运行)"
+          clearable
+      />
+    </el-form-item>
+
+    <template #footer>
+      <div class="dialog-footer">
+        <el-button @click="dialogExportCodeClickVisible = false">取消</el-button>
+        <el-button type="primary" @click="exportLocalClickSure">
+          确定
+        </el-button>
+      </div>
+    </template>
+  </el-dialog>
 </template>
 
 <script lang="ts" setup>
@@ -195,18 +244,21 @@ import {getCurrentInstance, reactive, ref} from 'vue'
 import {
   Download,
   Plus,
-  Bicycle,
+  Bicycle, FolderOpened,
 } from "@element-plus/icons-vue";
 import axios from "axios";
 import {ElNotification} from "element-plus";
 
 const dialogSQLVisible = ref(false)
 const dialogFormVisible = ref(false)
+const dialogExportCodeClickVisible = ref(false)
 
 const formLabelAlign = ref({
   packageBase: '',
   fieldIgnoreList: '',
   author: '',
+  tablePrefix: false,
+  enabledLombok: false,
   springBootGenerateVersion: 3,
   sqlIp: '',
   ipPort: '',
@@ -215,6 +267,7 @@ const formLabelAlign = ref({
   sqlPassword: '',
   databaseName: '',
   sqlStatement: '',
+  exportLocal: '',
 })
 
 function goToGithub() {
@@ -235,6 +288,28 @@ const springBootVersionOptions = [
   }
 ]
 
+const enabledLombokOptions = [
+  {
+    value: 'true',
+    label: 'true',
+  },
+  {
+    value: 'false',
+    label: 'false',
+  }
+]
+
+const tablePrefixOptions = [
+  {
+    value: 'true',
+    label: 'true',
+  },
+  {
+    value: 'false',
+    label: 'false',
+  }
+]
+
 let tableData = ref([])
 
 function handleQuery() {
@@ -247,6 +322,10 @@ function sqlCreateClick() {
 
 function configurationDatabase() {
   dialogFormVisible.value = true
+}
+
+function exportCodeClick() {
+  dialogExportCodeClickVisible.value = true
 }
 
 const api = getCurrentInstance().appContext.config.globalProperties.$api;
@@ -304,7 +383,7 @@ function sqlCreateClickSure() {
 
   axios({
     method: "post",
-    url: `${api}/findAllSQLResource`,
+    url: `${api}/generateCodeBySQL`,
     data: formLabelAlign.value,
     responseType: 'blob'
   }).then(function (resp) {
@@ -333,7 +412,7 @@ function databaseCreateClick() {
   formLabelAlign.value.sqlStatement = ''
   axios({
     method: "post",
-    url: `${api}/findSQLResource`,
+    url: `${api}/generateCodeByTableName`,
     data: formLabelAlign.value,
     responseType: 'blob'
   }).then(function (resp) {
@@ -352,12 +431,68 @@ function databaseCreateClick() {
   dialogFormVisible.value = false
 }
 
+function exportLocalClickSure() {
+  // 获取当前前端服务器的地址
+  const currentURL = window.location.origin;
+
+  // 检查当前URL是否为本地开发环境
+  const isLocal = currentURL.includes('localhost') || currentURL.includes('127.0.0.1');
+  if(isLocal){
+    ElNotification({
+      title: 'Error',
+      message: "请在本地环境中使用",
+      type: 'error',
+    })
+    return
+  }
+
+  if (formLabelAlign.value.packageBase.trim() === '') {
+    formLabelAlign.value.packageBase = "com.dullfan"
+  }
+  if (formLabelAlign.value.author.trim() === '') {
+    formLabelAlign.value.author = "DullFan"
+  }
+  if(formLabelAlign.value.exportLocal.trim() === ''){
+    ElNotification({
+      title: 'Error',
+      message: "请填写完整数据",
+      type: 'error',
+    })
+    return
+  }
+
+  axios({
+    method: "post",
+    url: `${api}/exportLocalCode`,
+    data: formLabelAlign.value
+  }).then(function (resp) {
+    console.log(resp)
+    if (resp.data.code == 500) {
+      ElNotification({
+        title: 'Error',
+        message: resp.data.msg,
+        type: 'error',
+      })
+    } else {
+      tableData.value = resp.data.data
+      dialogExportCodeClickVisible.value = false
+      ElNotification({
+        title: 'Success',
+        message: resp.data.msg,
+        type: 'success',
+      })
+    }
+  }).catch(error => {
+    console.error('下载文件失败:', error);
+  });
+  dialogFormVisible.value = false
+}
+
 
 function handleSelectionChange(selection) {
   generateButtonFlag.value = selection.length == 0
   formLabelAlign.value.databaseName = selection.map(item => item.tableName).join(',');
 }
-
 
 </script>
 
