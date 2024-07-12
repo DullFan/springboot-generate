@@ -1,10 +1,13 @@
 package com.dullfan.generate.controller;
 
+import com.alibaba.fastjson2.JSON;
 import com.dullfan.generate.config.DullJavaConfig;
 import com.dullfan.generate.entity.*;
 import com.dullfan.generate.service.DatabaseManagementService;
 import com.dullfan.generate.utils.*;
 import com.dullfan.generate.utils.extremely.ServiceException;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.github.cliftonlabs.json_simple.JsonObject;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
@@ -39,9 +42,9 @@ public class DatabaseManagementController {
     @PostMapping("/exportLocalCode")
     public Result exportLocalCode(@RequestBody ExportLocalConfig config) throws IOException {
         // TODO 本地运行删除判断
-        if(true){
-            return Result.error("请在本地运行");
-        }
+//        if(true){
+//            return Result.error("请在本地运行");
+//        }
         service.updateConfig(config);
         DullJavaConfig.setStaticPathBase(config.getExportLocal());
         List<TableInfo> listTables = service.selectListTables(true);
@@ -138,6 +141,7 @@ public class DatabaseManagementController {
     }
 
     public void newCreateFile(List<TableInfo> listTables, ZipOutputStream zip) {
+        System.out.println(JSON.toJSON(listTables));
         VelocityEngine velocityEngine = new VelocityEngine();
         velocityEngine.setProperty(RuntimeConstants.RESOURCE_LOADER, "classpath");
         velocityEngine.setProperty("classpath.resource.loader.class", ClasspathResourceLoader.class.getName());
@@ -198,6 +202,12 @@ public class DatabaseManagementController {
             context.put("StringUtils", new StringUtils());
             // 字符串工具类
             context.put("importSpringBootHashMap", DullJavaConfig.getImportSpringBootHashMap());
+            // 表是否有逻辑删除
+            context.put("hasDelFlag", tableInfo.getHaveDelFlag());
+            // 逻辑删除字段名
+            context.put("delFlagFields", DullJavaConfig.getDelFlagFields());
+            // 逻辑字段类型
+            context.put("delFlagFieldsType", tableInfo.getHaveDelFlagType());
             // 获取模板文件
             List<String> templates = VelocityUtils.getTemplateList();
 

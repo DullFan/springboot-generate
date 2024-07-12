@@ -3,6 +3,8 @@ package ${packageName}.entity.vo;
 import java.util.HashMap;
 import java.util.Objects;
 
+import ${packageName}.utils.constant.HttpStatus;
+
 /**
  * 操作消息提醒
  */

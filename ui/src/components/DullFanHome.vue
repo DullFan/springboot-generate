@@ -45,6 +45,15 @@
               />
             </el-form-item>
 
+            <el-form-item label="逻辑删除" prop="delFlagFields">
+              <el-input
+                  v-model="formLabelAlign.delFlagFields"
+                  placeholder="例如: del_flag"
+                  clearable
+                  @keyup.enter.native="handleQuery"
+              />
+            </el-form-item>
+
             <el-form-item label="SpringBoot版本" prop="springBootGenerateVersion">
               <el-select v-model="formLabelAlign.springBootGenerateVersion" placeholder="Select" style="width: 80px">
                 <el-option
@@ -56,7 +65,7 @@
               </el-select>
             </el-form-item>
 
-            <el-form-item label="是否忽略大小写" prop="tablePrefix">
+            <el-form-item label="是否忽略前缀" prop="tablePrefix">
               <el-select v-model="formLabelAlign.tablePrefix" placeholder="Select" style="width: 80px">
                 <el-option
                     v-for="item in tablePrefixOptions"
@@ -257,6 +266,7 @@ const formLabelAlign = ref({
   packageBase: '',
   fieldIgnoreList: '',
   author: '',
+  delFlagFields: '',
   tablePrefix: false,
   enabledLombok: false,
   springBootGenerateVersion: 3,
@@ -437,7 +447,7 @@ function exportLocalClickSure() {
 
   // 检查当前URL是否为本地开发环境
   const isLocal = currentURL.includes('localhost') || currentURL.includes('127.0.0.1');
-  if(isLocal){
+  if(!isLocal){
     ElNotification({
       title: 'Error',
       message: "请在本地环境中使用",

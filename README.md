@@ -9,6 +9,7 @@ SpringBoot-Generate是一款代码生成工具，旨在通过根据SQL语句生�
 - [x] 配置动态数据源,支持动态的添加数据源和切换数据源,不需要重启服务
 - [x] 生成代码支持浏览器下载以及生成到对应路径
 - [x] 根据主键生成查询、修改、删除
+- [x] 根据逻辑删除字段判断是否需要逻辑删除,查询语句没有添加相应的判断
 - [ ] 联表查询
 - [ ] 树形数据
 
@@ -32,19 +33,20 @@ SpringBoot-Generate是一款代码生成工具，旨在通过根据SQL语句生�
 * 请求数据类型: application/json
 * 请求参数
 
-| 参数名称          | 参数说明          | 参数类型 |
-|------------------|---------------|---------|
-| tablePrefix      | 是否使用表前缀       | boolean |
-| enabledLombok    | 是否使用Lombok    | boolean |
-| packageBase      | 基础包名          | String  |
-| fieldIgnoreList  | 要忽略的字段列表      | String  |
-| author           | 作者            | String  |
-| sqlIp            | 数据库IP地址       | String  |
-| ipPort           | 数据库端口号        | String  |
-| sqlName          | 数据库名称         | String  |
-| sqlUsername      | 数据库用户名        | String  |
-| sqlPassword      | 数据库密码         | String  |
-| springBootVersion| Spring Boot版本 | String  |
+| 参数名称          | 参数说明                    | 参数类型 |
+|------------------|-------------------------|---------|
+| tablePrefix      | 是否使用表前缀                 | boolean |
+| enabledLombok    | 是否使用Lombok              | boolean |
+| packageBase      | 基础包名                    | String  |
+| delFlagFields    | 逻辑删除字段(只支持tinyint、char) | String  |
+| fieldIgnoreList  | 要忽略的字段列表                | String  |
+| author           | 作者                      | String  |
+| sqlIp            | 数据库IP地址                 | String  |
+| ipPort           | 数据库端口号                  | String  |
+| sqlName          | 数据库名称                   | String  |
+| sqlUsername      | 数据库用户名                  | String  |
+| sqlPassword      | 数据库密码                   | String  |
+| springBootVersion| Spring Boot版本           | String  |
 * 请求示例
 ```json
 {
@@ -52,6 +54,7 @@ SpringBoot-Generate是一款代码生成工具，旨在通过根据SQL语句生�
   "enabledLombok":"true",
   "packageBase":"com.hahaha",
   "fieldIgnoreList":"id,status",
+  "delFlagFields":"del_flag",
   "author":"DullFan",
   "sqlIp":"127.0.0.1",
   "ipPort":"3306",

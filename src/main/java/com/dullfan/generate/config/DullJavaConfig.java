@@ -40,6 +40,13 @@ public class DullJavaConfig {
     @Getter
     private static String author;
 
+
+    /**
+     * 逻辑删除字段
+     */
+    @Getter
+    private static String delFlagFields = "";
+
     /**
      * 是否忽略表前缀
      */
@@ -82,6 +89,11 @@ public class DullJavaConfig {
     @Value("${dull.author}")
     public void setAuthor(String author) {
         DullJavaConfig.author = author;
+    }
+
+
+    public static void setDelFlag(String delFlagFields) {
+        DullJavaConfig.delFlagFields = delFlagFields;
     }
 
     @Value("${dull.path-base}")

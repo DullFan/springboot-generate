@@ -226,6 +226,7 @@ public class DatabaseManagementServiceImpl implements DatabaseManagementService 
         DullJavaConfig.setStaticPackageBase(configBean.getPackageBase());
         DullJavaConfig.setStaticTablePrefix(configBean.isTablePrefix());
         DullJavaConfig.setStaticEnabledLombok(configBean.isEnabledLombok());
+        DullJavaConfig.setDelFlag(configBean.getDelFlagFields());
         if(StringUtils.isEmpty(configBean.getAuthor())){
             configBean.setAuthor(DullJavaConfig.getAuthor());
         } else {
@@ -251,6 +252,8 @@ public class DatabaseManagementServiceImpl implements DatabaseManagementService 
             boolean hasDate = false;
             boolean hasBigDecimal = false;
             boolean haveJsonIgnore = false;
+            boolean haveDelFlag = false;
+            String delFlagType = "String";
             for (TableStructure structure : tableStructure) {
                 String type = structure.getType();
                 if (type.indexOf("(") > 0) {
@@ -266,6 +269,10 @@ public class DatabaseManagementServiceImpl implements DatabaseManagementService 
                 if (ArrayUtils.contains(Constants.SQL_DATE_TIME_TYPES, type)) hasDateTime = true;
                 if (ArrayUtils.contains(Constants.SQL_DATE_TYPES, type)) hasDate = true;
                 if (ArrayUtils.contains(Constants.SQL_DECIMAL_TYPE, type)) hasBigDecimal = true;
+                if (structure.getField().equals(DullJavaConfig.getDelFlagFields())) {
+                    haveDelFlag = true;
+                    delFlagType = fieldInfo.getJavaType();
+                }
                 if (DullJavaConfig.getFieldIgnoreHashSet().contains(fieldInfo.getFieldName())) {
                     haveJsonIgnore = true;
                     fieldInfo.setHaveJsonIgnore(true);
@@ -276,6 +283,8 @@ public class DatabaseManagementServiceImpl implements DatabaseManagementService 
             tableInfo.setHaveDateTime(hasDateTime);
             tableInfo.setHaveDate(hasDate);
             tableInfo.setHaveJsonIgnore(haveJsonIgnore);
+            tableInfo.setHaveDelFlag(haveDelFlag);
+            tableInfo.setHaveDelFlagType(delFlagType);
             List<FieldInfo> extendList = new ArrayList<>();
             for (FieldInfo fieldInfo : fieldInfoList) {
                 //String类型参数,

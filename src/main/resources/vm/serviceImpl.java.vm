@@ -83,6 +83,26 @@ public class ${className}ServiceImpl implements ${className}Service  {
         return #classNameMapper().updateByParam(bean,query);
     }
 
+#if($hasDelFlag)
+    /**
+     * 根据 #funName($keyData)逻辑删除
+     */
+    @Override
+    public Integer softDeleteBy#funName($keyData)(#parameterName2($keyData)){
+        ${className}Query query = new ${className}Query();
+        #foreach($item in $keyData.getValue())
+            query.set${StringUtils.convertToCamelCase($item.propertyName)}(${item.propertyName});
+        #end
+        $className bean = new $className();
+#if($delFlagFieldsType == "String")
+        bean.set${StringUtils.convertToCamelCase($delFlagFields)}("1");
+#else
+        bean.set${StringUtils.convertToCamelCase($delFlagFields)}(1)
+#end
+        return #classNameMapper().updateByParam(bean,query);
+    }
+#end
+
     /**
      * 根据 #funName($keyData) 删除
      */

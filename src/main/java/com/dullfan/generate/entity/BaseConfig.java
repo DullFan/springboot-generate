@@ -28,6 +28,11 @@ public class BaseConfig {
     private String author = DullJavaConfig.getAuthor();
 
     /**
+     * 逻辑删除字段
+     */
+    private String delFlagFields = DullJavaConfig.getDelFlagFields();
+
+    /**
      * 数据库IP
      */
     private String sqlIp;

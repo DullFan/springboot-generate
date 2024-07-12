@@ -47,7 +47,7 @@ public class VelocityUtils {
     public static String getFileName(String template, String beanName) {
         // 文件名称
         String fileName = "";
-        String pathPackageBase = DullJavaConfig.PROJECT_PATH;
+        String pathPackageBase = DullJavaConfig.PROJECT_PATH + "/" + DullJavaConfig.getPackageBase().replace(".","/");
         String pathPackageBaseXML = DullJavaConfig.MYBATIS_PATH;
         // 包路径
 //        String pathPackageBase = DullJavaConfig.getPathPackageBase();
@@ -70,14 +70,13 @@ public class VelocityUtils {
         return fileName;
     }
 
-
     /**
      * 获取Base文件名
      */
     public static String getBaseFileName(String template) {
         // 文件名称
         String fileName = "";
-        String pathPackageBase = DullJavaConfig.PROJECT_PATH;
+        String pathPackageBase = DullJavaConfig.PROJECT_PATH + "/" + DullJavaConfig.getPackageBase().replace(".","/");
         // 包路径
 //        String pathPackageBase = DullJavaConfig.getPathPackageBase();
         if (template.contains("ABaseController.java.vm")) {

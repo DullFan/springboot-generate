@@ -59,6 +59,16 @@ public class ${className}Controller extends ABaseController  {
         return determineOperationOutcome(result);
     }
 
+#if($hasDelFlag)
+    /**
+     * 根据 #funName($keyData)s 逻辑删除
+     */
+    @DeleteMapping("/deleteBy#funName($keyData)s")
+    public Result softDeleteBy#funName($keyData)(#parameterNameController2($keyData)){
+        Integer result = #classNameService().softDeleteBy#funName($keyData)(#parameterNameController3($keyData));
+        return determineOperationOutcome(result);
+    }
+#end
 
     /**
      * 根据 #funName($keyData) 删除
@@ -68,6 +78,7 @@ public class ${className}Controller extends ABaseController  {
         Integer result = #classNameService().deleteBy#funName($keyData)(#parameterNameController3($keyData));
         return determineOperationOutcome(result);
     }
+
 #if($keyData.getValue().get(0).getAutoIncrementFlag())
     /**
      * 根据 #funName($keyData) 批量删除

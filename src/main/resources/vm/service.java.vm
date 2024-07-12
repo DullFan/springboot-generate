@@ -43,6 +43,13 @@ public interface ${className}Service {
      */
     Integer updateBy#funName($keyData)($className bean,#parameterName2($keyData));
 
+#if($hasDelFlag)
+    /**
+     * 根据 #funName($keyData)逻辑删除
+     */
+    Integer softDeleteBy#funName($keyData)(#parameterName2($keyData));
+#end
+
     /**
      * 根据 #funName($keyData) 删除
      */

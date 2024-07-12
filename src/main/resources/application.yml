@@ -2,7 +2,7 @@ spring:
   datasource:
     name: mysql
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/community?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&useSSL=false&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://localhost:3306/core?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&useSSL=false&allowPublicKeyRetrieval=true
     username: root
     password: Fan292852.
 server:
@@ -16,7 +16,7 @@ dull:
   # 是否启动lombok
   lombok-enable: false
   # 输出路径
-  path-base: D:/AResourceData/testResources
+  path-base: D:/AStudyData/IdeaProjects/demo/src
   # 包名
   package-base: com.example.demo
   # 作者

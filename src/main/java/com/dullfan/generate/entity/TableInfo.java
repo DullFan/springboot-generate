@@ -48,6 +48,14 @@ public class TableInfo {
      * 是否有要被忽略的对象
      */
     private Boolean haveJsonIgnore = false;
+    /**
+     * 是否有逻辑删除字段
+     */
+    private Boolean haveDelFlag = false;
+    /**
+     * 逻辑删除类型
+     */
+    private String haveDelFlagType = "String";
 
     /**
      * 扩展字段信息
