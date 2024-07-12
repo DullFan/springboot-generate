@@ -90,14 +90,24 @@ public class ${className}ServiceImpl implements ${className}Service  {
     @Override
     public Integer softDeleteBy#funName($keyData)(#parameterName2($keyData)){
         ${className}Query query = new ${className}Query();
-        #foreach($item in $keyData.getValue())
-            query.set${StringUtils.convertToCamelCase($item.propertyName)}(${item.propertyName});
-        #end
+#foreach($item in $keyData.getValue())
+        query.set${StringUtils.convertToCamelCase($item.propertyName)}(${item.propertyName});
+#end
         $className bean = new $className();
+        $className queryBean = selectBy#funName($keyData)(#parameterName3($keyData));
+
 #if($delFlagFieldsType == "String")
-        bean.set${StringUtils.convertToCamelCase($delFlagFields)}("1");
+        if(queryBean.get${StringUtils.convertToCamelCase($delFlagFields)}().equals("1")){
+            bean.set${StringUtils.convertToCamelCase($delFlagFields)}("0");
+        } else {
+            bean.set${StringUtils.convertToCamelCase($delFlagFields)}("1");
+        }
 #else
-        bean.set${StringUtils.convertToCamelCase($delFlagFields)}(1)
+        if(queryBean.get${StringUtils.convertToCamelCase($delFlagFields)}().equals("1")){
+            bean.set${StringUtils.convertToCamelCase($delFlagFields)}(0);
+        } else {
+            bean.set${StringUtils.convertToCamelCase($delFlagFields)}(1);
+        }
 #end
         return #classNameMapper().updateByParam(bean,query);
     }
