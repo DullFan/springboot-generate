@@ -292,7 +292,7 @@ public class DatabaseManagementServiceImpl implements DatabaseManagementService 
                 if (ArrayUtils.contains(Constants.SQL_STRING_TYPE, fieldInfo.getSqlType()) || ArrayUtils.contains(Constants.SQL_BYTE_TYPES, fieldInfo.getSqlType())) {
                     FieldInfo field = new FieldInfo();
                     field.setJavaType(fieldInfo.getJavaType());
-                    field.setPropertyName(fieldInfo.getPropertyName() + "fuzzy");
+                    field.setPropertyName(fieldInfo.getPropertyName() + Constants.STRING_FUZZY);
                     field.setFieldName(fieldInfo.getFieldName());
                     field.setSqlType(fieldInfo.getSqlType());
                     extendList.add(field);
@@ -301,13 +301,13 @@ public class DatabaseManagementServiceImpl implements DatabaseManagementService 
                 if (ArrayUtils.contains(Constants.SQL_DATE_TIME_TYPES, fieldInfo.getSqlType()) || ArrayUtils.contains(Constants.SQL_DATE_TYPES, fieldInfo.getSqlType())) {
                     FieldInfo field = new FieldInfo();
                     field.setJavaType("Date");
-                    field.setPropertyName(fieldInfo.getPropertyName() + "Start");
+                    field.setPropertyName(fieldInfo.getPropertyName() + Constants.STRING_DATE_START);
                     field.setFieldName(fieldInfo.getFieldName());
                     field.setSqlType(fieldInfo.getSqlType());
                     extendList.add(field);
                     field = new FieldInfo();
                     field.setJavaType("Date");
-                    field.setPropertyName(fieldInfo.getPropertyName() + "End");
+                    field.setPropertyName(fieldInfo.getPropertyName() + Constants.STRING_DATE_END);
                     field.setFieldName(fieldInfo.getFieldName());
                     field.setSqlType(fieldInfo.getSqlType());
                     extendList.add(field);

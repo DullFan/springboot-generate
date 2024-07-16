@@ -103,7 +103,7 @@ public class ${className}ServiceImpl implements ${className}Service  {
             bean.set${StringUtils.convertToCamelCase($delFlagFields)}("1");
         }
 #else
-        if(queryBean.get${StringUtils.convertToCamelCase($delFlagFields)}().equals("1")){
+        if(queryBean.get${StringUtils.convertToCamelCase($delFlagFields)}() == 1){
             bean.set${StringUtils.convertToCamelCase($delFlagFields)}(0);
         } else {
             bean.set${StringUtils.convertToCamelCase($delFlagFields)}(1);

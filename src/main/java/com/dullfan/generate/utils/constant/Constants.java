@@ -10,4 +10,9 @@ public class Constants {
     public static final String[] SQL_DATE_TYPES = {"date", "time", "year"};
     public static final String[] SQL_DECIMAL_TYPE = {"decimal", "decimal unsigned"};
     public static final String[] SQL_BYTE_TYPES = {"binary", "varbinary", "blob", "tinyblob", "mediumblob", "longblob"};
+
+    public static final String STRING_FUZZY = "Fuzzy";
+    public static final String STRING_DATE_START = "Start";
+    public static final String STRING_DATE_END = "End";
+
 }
