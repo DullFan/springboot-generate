@@ -15,7 +15,7 @@ public interface ABaseMapper<T, P> {
     /**
      * 批量插入
      */
-    Integer insertBatch(@Param("list") List<T> list);
+    Integer inserts(@Param("list") List<T> list);
 
     /**
      * 根据参数查询集合

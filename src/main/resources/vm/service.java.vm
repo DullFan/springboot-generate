@@ -30,7 +30,7 @@ public interface ${className}Service {
     /**
      * 批量新增
      */
-    Integer insertBatch(List<${className}> listBean);
+    Integer inserts(List<${className}> listBean);
 
 #foreach($keyData in ${keyIndexMap.entrySet()})
     /**
@@ -57,9 +57,19 @@ public interface ${className}Service {
 
 #if($keyData.getValue().get(0).getAutoIncrementFlag())
     /**
+     * 根据 #funName($keyData) 批量查询
+     */
+     List<${className}> selectBy#funName($keyData)s(List<Integer> ids);
+
+    /**
+     * 根据 #funName($keyData) 批量修改
+     */
+    Integer updateBy#funName($keyData)s(${className} bean,List<Integer> ids);
+
+    /**
      * 根据 #funName($keyData) 批量删除
      */
-    Integer deleteBy#funName($keyData)Batch(List<Integer> list);
+    Integer deleteBy#funName($keyData)s(List<Integer> ids);
 #end
 #end
 ## 方法名称 如 IdAndNameAndAge
