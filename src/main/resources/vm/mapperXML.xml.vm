@@ -40,7 +40,7 @@
             #elseif($StringUtils.endsWithStart($item.propertyName))
             and $item.fieldName >= #{query.$item.propertyName}
             #else
-            <![CDATA[and create_time < #{query.$item.propertyName}]]>
+            <![CDATA[and $item.fieldName < #{query.$item.propertyName}]]>
             #end
         </if>
 #end
